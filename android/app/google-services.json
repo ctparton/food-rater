@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "203247147364",
+    "project_id": "foodrater-c2a70",
+    "storage_bucket": "foodrater-c2a70.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203247147364:android:ee8b26a475fbc5dbb00271",
+        "android_client_info": {
+          "package_name": "com.ctparton.food_rater"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203247147364-1bklmjjn3t4v78dj693dsk2260jkfteb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFJFv7XXsAusNq9A_DNwY27TJvHfs8tJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203247147364-1bklmjjn3t4v78dj693dsk2260jkfteb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
