@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_rater/views/map/map.dart';
 import 'package:animations/animations.dart';
 import 'package:food_rater/views/rate/ratings.dart';
+import 'package:food_rater/views/rate/review.dart';
 import 'package:food_rater/views/test.dart';
 import 'package:food_rater/services/auth.dart';
 
@@ -14,7 +15,7 @@ class _HomeState extends State<Home> {
   int _currentPage = 0;
   final AuthService _auth = AuthService();
 
-  final page = [Ratings(), MapState(), Test(), Test()];
+  final page = [Ratings(), MapState(), Review(), Test()];
 
   @override
   Widget build(BuildContext context) {

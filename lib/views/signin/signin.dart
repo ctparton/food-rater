@@ -29,7 +29,7 @@ class _SignInState extends State<SignIn> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  SvgPicture.asset('assets/008-catering.svg'),
+                  // SvgPicture.asset('assets/008-catering.svg'),
                   Text("Sign In"),
                   FormBuilderTextField(
                     decoration: const InputDecoration(

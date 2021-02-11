@@ -74,7 +74,7 @@ class _RegisterState extends State<Register> {
                     height: 20.0,
                   ),
                   RaisedButton(
-                    child: Text('sign in'),
+                    child: Text('Register'),
                     onPressed: () async {
                       _formKey.currentState.save();
                       if (_formKey.currentState.validate()) {
