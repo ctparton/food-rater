@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_rater/views/rate/ratingsDetail.dart';
 import 'package:provider/provider.dart';
@@ -15,12 +16,16 @@ class _RatingsState extends State<Ratings> {
   @override
   Widget build(BuildContext context) {
     final _user = Provider.of<AppUser>(context);
+    final _ratings = Provider.of<QuerySnapshot>(context);
 
+    for (var doc in _ratings.docs) {
+      print(doc);
+    }
     return Scaffold(
         body: new ListView.builder(
-            itemCount: litems.length,
+            itemCount: _ratings.docs.length,
             itemBuilder: (BuildContext ctxt, int index) {
-              String value = litems[index] + _user.uid;
+              String value = _ratings.docs[index]['rCity'];
               return new InkWell(
                   onTap: () {
                     Navigator.push(

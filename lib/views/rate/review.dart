@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:food_rater/services/firestoreService.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/appuser.dart';
@@ -131,8 +132,11 @@ class _ReviewState extends State<Review> {
                         height: 20,
                       ),
                       RaisedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           print("image is $_image");
+                          FirestoreServce firestoreServce =
+                              FirestoreServce(uid: _user.uid);
+                          await firestoreServce.addRating("test", "test");
                           Scaffold.of(context).showSnackBar(SnackBar(
                             content: Text('Rating submitted'),
                             action: SnackBarAction(
