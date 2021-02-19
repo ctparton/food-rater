@@ -1,27 +1,33 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 class FoodRating {
   final String rName;
-  final String city;
-  FoodRating({
-    this.rName,
-    this.city,
-  });
+  final String rCity;
+  final double rating;
+  final String image;
+
+  FoodRating({this.rName, this.rCity, this.rating, this.image});
 
   FoodRating copyWith({
     String rName,
-    String city,
+    String rCity,
   }) {
     return FoodRating(
-      rName: rName ?? this.rName,
-      city: city ?? this.city,
-    );
+        rName: rName ?? this.rName,
+        rCity: rCity ?? this.rCity,
+        rating: rating ?? this.rating);
   }
 
   Map<String, dynamic> toMap() {
     return {
       'rName': rName,
-      'city': city,
+      'rCity': rCity,
     };
   }
 
@@ -30,7 +36,7 @@ class FoodRating {
 
     return FoodRating(
       rName: map['rName'],
-      city: map['city'],
+      rCity: map['rCity'],
     );
   }
 
@@ -39,16 +45,29 @@ class FoodRating {
   factory FoodRating.fromJson(String source) =>
       FoodRating.fromMap(json.decode(source));
 
+  // factory FoodRating.fromSnapshot(QuerySnapshot snapshot) {
+
+  // }
   @override
-  String toString() => 'FoodRating(rName: $rName, city: $city)';
+  String toString() => 'Restaurant: $rName, City: $rCity, Rating; $rating)';
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
-    return o is FoodRating && o.rName == rName && o.city == city;
+    return o is FoodRating && o.rName == rName && o.rCity == rCity;
+  }
+
+  dynamic getImage() {
+    dynamic imagePlaceholder = image != null
+        ? Image.network(image, fit: BoxFit.cover, errorBuilder:
+            (BuildContext context, Object exception, StackTrace stackTrace) {
+            return Text('Your error widget...');
+          })
+        : SvgPicture.asset('assets/043-ramen.svg');
+    return imagePlaceholder;
   }
 
   @override
-  int get hashCode => rName.hashCode ^ city.hashCode;
+  int get hashCode => rName.hashCode ^ rCity.hashCode;
 }

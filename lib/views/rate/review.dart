@@ -18,7 +18,22 @@ class Review extends StatefulWidget {
 
 class _ReviewState extends State<Review> {
   final _formKey = GlobalKey<FormBuilderState>();
+  String _rName;
+  String _rCity;
+  double _rating;
   File _image;
+
+  void resetForm() {
+    print("resetting form");
+    setState(() {
+      _rName = '';
+      _rCity = '';
+      _rating = 1;
+      _image = null;
+      _formKey.currentState.reset();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final _user = Provider.of<AppUser>(context);
@@ -36,14 +51,15 @@ class _ReviewState extends State<Review> {
                           icon: Icon(Icons.place),
                           labelText: 'Restaurant Name *',
                         ),
+                        onChanged: (value) => setState(() => _rName = value),
                       ),
                       FormBuilderTextField(
-                        name: "rCity",
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.place),
-                          labelText: 'City *',
-                        ),
-                      ),
+                          name: "rCity",
+                          decoration: const InputDecoration(
+                            icon: Icon(Icons.place),
+                            labelText: 'City *',
+                          ),
+                          onChanged: (value) => setState(() => _rCity = value)),
                       FormBuilderTextField(
                         name: "mealName",
                         decoration: const InputDecoration(
@@ -85,21 +101,19 @@ class _ReviewState extends State<Review> {
                               errorText: field.errorText,
                             ),
                             child: RatingBar.builder(
-                              initialRating: 3,
-                              minRating: 1,
-                              direction: Axis.horizontal,
-                              allowHalfRating: false,
-                              itemCount: 5,
-                              itemPadding:
-                                  EdgeInsets.symmetric(horizontal: 4.0),
-                              itemBuilder: (context, _) => Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                              ),
-                              onRatingUpdate: (rating) {
-                                print(rating);
-                              },
-                            ),
+                                initialRating: 3,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: false,
+                                itemCount: 5,
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: 4.0),
+                                itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                onRatingUpdate: (value) =>
+                                    setState(() => _rating = value)),
                           );
                         },
                       ),
@@ -107,12 +121,15 @@ class _ReviewState extends State<Review> {
                         name: 'photos',
                         imageQuality: 50,
                         onChanged: (value) {
-                          print("value is $value");
-                          if (value != null) {
-                            print(value.first.runtimeType);
+                          if (value.isNotEmpty) {
                             print(value.first);
                             setState(() {
                               _image = value.first;
+                            });
+                          } else {
+                            print("Clearing");
+                            setState(() {
+                              _image = null;
                             });
                           }
                         },
@@ -136,7 +153,10 @@ class _ReviewState extends State<Review> {
                           print("image is $_image");
                           FirestoreServce firestoreServce =
                               FirestoreServce(uid: _user.uid);
-                          await firestoreServce.addRating("test", "test");
+                          firestoreServce
+                              .addRating(_rName, _rCity, _rating, _image)
+                              .then((value) => setState(() => resetForm()));
+
                           Scaffold.of(context).showSnackBar(SnackBar(
                             content: Text('Rating submitted'),
                             action: SnackBarAction(

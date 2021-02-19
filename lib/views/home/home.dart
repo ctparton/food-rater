@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_rater/models/foodrating.dart';
 import 'package:food_rater/views/map/map.dart';
 import 'package:animations/animations.dart';
 import 'package:food_rater/views/rate/ratings.dart';
@@ -25,7 +26,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final _user = Provider.of<AppUser>(context);
 
-    return StreamProvider<QuerySnapshot>.value(
+    return StreamProvider<List<FoodRating>>.value(
       value: FirestoreServce(uid: _user.uid).ratings,
       child: Scaffold(
         appBar: AppBar(
