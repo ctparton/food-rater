@@ -3,6 +3,7 @@ import 'package:food_rater/models/foodrating.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:path/path.dart' as p;
+import 'package:opencage_geocoder/opencage_geocoder.dart';
 
 class FirestoreServce {
   final String uid;
@@ -15,6 +16,8 @@ class FirestoreServce {
       [image, comments]) async {
     String comment = comments ?? '';
     String imageUrl;
+    dynamic result;
+    Coordinates coordinates;
     // try {
     //   print(date.toString());
     //   // DateTime.parse();
@@ -24,6 +27,16 @@ class FirestoreServce {
     if (image != null) {
       imageUrl = await uploadFile(image);
     }
+    try {
+      result = await getLocationData(rName, rCity);
+      if (result != null) {
+        Result strongestMatch = result.results.first;
+        coordinates = strongestMatch.geometry;
+      }
+    } catch (Exception) {
+      print("failed to get location data");
+    }
+
     return await userCollection.doc(uid).collection("ratings").add({
       'rName': rName,
       'rCity': rCity,
@@ -31,7 +44,9 @@ class FirestoreServce {
       'date': date,
       'rating': rating,
       'image': imageUrl,
-      'comments': comment
+      'comments': comment,
+      'latitude': coordinates.latitude,
+      'longitude': coordinates.longitude
     });
   }
 
@@ -51,6 +66,11 @@ class FirestoreServce {
     }
 
     return returnURL;
+  }
+
+  Future<GeocoderResponse> getLocationData(rName, city) async {
+    final geocoder = new Geocoder("c2ef3364e065450098b524f349d373b0");
+    return await geocoder.geocode("$rName $city");
   }
 
   List<FoodRating> _foodRatingFromSnapshot(QuerySnapshot snapshot) {
