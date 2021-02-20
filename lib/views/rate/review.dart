@@ -1,5 +1,3 @@
-// import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -7,9 +5,8 @@ import 'package:food_rater/services/firestoreService.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/appuser.dart';
-// import 'dart:html';
-// import 'dart:async';
 import 'dart:io';
+import 'package:intl/intl.dart';
 
 class Review extends StatefulWidget {
   @override
@@ -20,16 +17,22 @@ class _ReviewState extends State<Review> {
   final _formKey = GlobalKey<FormBuilderState>();
   String _rName;
   String _rCity;
+  String _mealName;
+  dynamic _date;
   double _rating;
   File _image;
+  String _comments;
 
   void resetForm() {
     print("resetting form");
     setState(() {
       _rName = '';
       _rCity = '';
+      _mealName = '';
+      _date = '';
       _rating = 1;
       _image = null;
+      _comments = '';
       _formKey.currentState.reset();
     });
   }
@@ -61,19 +64,20 @@ class _ReviewState extends State<Review> {
                           ),
                           onChanged: (value) => setState(() => _rCity = value)),
                       FormBuilderTextField(
-                        name: "mealName",
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.set_meal),
-                          labelText: 'Meal Name *',
-                        ),
-                      ),
+                          name: "mealName",
+                          decoration: const InputDecoration(
+                            icon: Icon(Icons.set_meal),
+                            labelText: 'Meal Name *',
+                          ),
+                          onChanged: (value) =>
+                              setState(() => _mealName = value)),
                       FormBuilderDateTimePicker(
                         name: 'date',
-                        // onChanged: _onChanged,
                         inputType: InputType.date,
                         decoration: InputDecoration(
                             labelText: 'Consumed On',
                             icon: Icon(Icons.date_range)),
+                        onChanged: (value) => setState(() => _date = value),
                       ),
                       SizedBox(
                         height: 10.0,
@@ -144,28 +148,47 @@ class _ReviewState extends State<Review> {
                         decoration: const InputDecoration(
                             labelText: 'Comments', icon: Icon(Icons.comment)),
                         name: "comments",
+                        onChanged: (value) => setState(() => _comments = value),
                       ),
                       SizedBox(
                         height: 20,
                       ),
                       RaisedButton(
                         onPressed: () async {
+                          print("Restaurant is $_rName");
+                          print("City is $_rCity");
+                          print("Meal is $_mealName");
+                          print(
+                              "Date is ${DateFormat('dd-MM-yyyy').format(_date)}");
+                          print("Rating is $_rating");
                           print("image is $_image");
+                          print("comments are $_comments");
                           FirestoreServce firestoreServce =
                               FirestoreServce(uid: _user.uid);
-                          firestoreServce
-                              .addRating(_rName, _rCity, _rating, _image)
-                              .then((value) => setState(() => resetForm()));
-
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text('Rating submitted'),
-                            action: SnackBarAction(
-                              label: 'View',
-                              onPressed: () {
-                                // Some code to undo the change.
-                              },
-                            ),
-                          ));
+                          try {
+                            dynamic result = await firestoreServce.addRating(
+                                _rName,
+                                _rCity,
+                                _mealName,
+                                DateFormat('dd-MM-yyyy').format(_date),
+                                _rating,
+                                _image,
+                                _comments);
+                            setState(() {
+                              resetForm();
+                            });
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text('Rating submitted'),
+                              action: SnackBarAction(
+                                label: 'View',
+                                onPressed: () {
+                                  // Some code to undo the change.
+                                },
+                              ),
+                            ));
+                          } catch (Exception) {
+                            print("Error");
+                          }
                         },
                         child: Text("Rate!"),
                       )

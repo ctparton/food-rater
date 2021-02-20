@@ -9,10 +9,20 @@ import 'dart:io';
 class FoodRating {
   final String rName;
   final String rCity;
+  final String mealName;
+  final String date;
   final double rating;
   final String image;
+  final String comments;
 
-  FoodRating({this.rName, this.rCity, this.rating, this.image});
+  FoodRating(
+      {this.rName,
+      this.rCity,
+      this.mealName,
+      this.date,
+      this.rating,
+      this.image,
+      this.comments});
 
   FoodRating copyWith({
     String rName,
@@ -62,7 +72,7 @@ class FoodRating {
     dynamic imagePlaceholder = image != null
         ? Image.network(image, fit: BoxFit.cover, errorBuilder:
             (BuildContext context, Object exception, StackTrace stackTrace) {
-            return Text('Your error widget...');
+            return SvgPicture.asset('assets/043-ramen.svg');
           })
         : SvgPicture.asset('assets/043-ramen.svg');
     return imagePlaceholder;

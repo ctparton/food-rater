@@ -11,13 +11,28 @@ class FirestoreServce {
 
   FirestoreServce({this.uid});
 
-  Future addRating(rName, rCity, rating, image) async {
+  Future addRating(rName, rCity, mealName, date, rating,
+      [image, comments]) async {
+    String comment = comments ?? '';
     String imageUrl;
+    // try {
+    //   print(date.toString());
+    //   // DateTime.parse();
+    // } catch (FormatException) {
+    //   return Future.error("Date is invalid");
+    // }
     if (image != null) {
       imageUrl = await uploadFile(image);
     }
-    return await userCollection.doc(uid).collection("ratings").add(
-        {'rName': rName, 'rCity': rCity, 'rating': rating, 'image': imageUrl});
+    return await userCollection.doc(uid).collection("ratings").add({
+      'rName': rName,
+      'rCity': rCity,
+      'mealName': mealName,
+      'date': date,
+      'rating': rating,
+      'image': imageUrl,
+      'comments': comment
+    });
   }
 
   Future<String> uploadFile(File _image) async {
@@ -43,8 +58,11 @@ class FirestoreServce {
         .map((doc) => FoodRating(
             rName: doc.data()['rName'] ?? '',
             rCity: doc.data()['rCity'] ?? '',
+            mealName: doc.data()['mealName'],
+            date: doc.data()['date'],
             rating: doc.data()['rating'] ?? 1,
-            image: doc.data()['image']))
+            image: doc.data()['image'],
+            comments: doc.data()['comments']))
         .toList();
   }
 
