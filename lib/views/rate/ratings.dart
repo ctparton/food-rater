@@ -27,20 +27,53 @@ class _RatingsState extends State<Ratings> {
         body: _ratings.length != null
             ? ListView.builder(
                 itemCount: _ratings.length ?? 0,
-                itemBuilder: (BuildContext ctxt, int index) {
-                  String value = _ratings[index].toString();
-                  return new InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                RatingsDetail(detail: _ratings[index]),
-                          ),
-                        );
-                      },
-                      child: Card(child: Text(value)));
-                })
+                itemBuilder: (BuildContext ctxt, int index) =>
+                    buildRatingCard(ctxt, index, _ratings))
             : Text("You have not made any ratings yet"));
+  }
+
+  Widget buildRatingCard(
+      BuildContext ctxt, int index, List<FoodRating> ratings) {
+    return Container(
+        child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RatingsDetail(detail: ratings[index]),
+              ),
+            );
+          },
+          child: Column(children: [
+            Padding(padding: const EdgeInsets.only(top: 8.0, bottom: 8.0)),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(children: [
+                Text(
+                  ratings[index].rName,
+                  style: TextStyle(fontSize: 30),
+                ),
+                Spacer()
+              ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(children: [Text(ratings[index].mealName), Spacer()]),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(children: [
+                Text(ratings[index].rating.toString()),
+                Spacer(),
+                Icon(Icons.star)
+              ]),
+            ),
+          ]),
+        ),
+      ),
+    ));
   }
 }
