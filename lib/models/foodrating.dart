@@ -69,12 +69,16 @@ class FoodRating {
   }
 
   dynamic getImage() {
-    dynamic imagePlaceholder = image != null
-        ? Image.network(image, fit: BoxFit.cover, errorBuilder:
-            (BuildContext context, Object exception, StackTrace stackTrace) {
-            return SvgPicture.asset('assets/043-ramen.svg');
-          })
-        : SvgPicture.asset('assets/043-ramen.svg');
+    dynamic imagePlaceholder;
+    try {
+      imagePlaceholder = Image.network(image, fit: BoxFit.cover, errorBuilder:
+          (BuildContext context, Object exception, StackTrace stackTrace) {
+        return SvgPicture.asset('assets/043-ramen.svg');
+      });
+    } catch (Exception) {
+      imagePlaceholder = SvgPicture.asset('assets/043-ramen.svg');
+    }
+
     return imagePlaceholder;
   }
 
