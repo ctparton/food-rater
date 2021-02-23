@@ -11,9 +11,10 @@ class FoodRating {
   final String rCity;
   final String mealName;
   final String date;
-  final double rating;
+  double rating;
   final String image;
   final String comments;
+  final String docID;
 
   FoodRating(
       {this.rName,
@@ -22,42 +23,9 @@ class FoodRating {
       this.date,
       this.rating,
       this.image,
-      this.comments});
+      this.comments,
+      this.docID});
 
-  FoodRating copyWith({
-    String rName,
-    String rCity,
-  }) {
-    return FoodRating(
-        rName: rName ?? this.rName,
-        rCity: rCity ?? this.rCity,
-        rating: rating ?? this.rating);
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'rName': rName,
-      'rCity': rCity,
-    };
-  }
-
-  factory FoodRating.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
-    return FoodRating(
-      rName: map['rName'],
-      rCity: map['rCity'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory FoodRating.fromJson(String source) =>
-      FoodRating.fromMap(json.decode(source));
-
-  // factory FoodRating.fromSnapshot(QuerySnapshot snapshot) {
-
-  // }
   @override
   String toString() => 'Restaurant: $rName, City: $rCity, Rating; $rating)';
 

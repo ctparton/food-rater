@@ -18,12 +18,7 @@ class FirestoreServce {
     String imageUrl;
     dynamic result;
     Coordinates coordinates;
-    // try {
-    //   print(date.toString());
-    //   // DateTime.parse();
-    // } catch (FormatException) {
-    //   return Future.error("Date is invalid");
-    // }
+
     if (image != null) {
       imageUrl = await uploadFile(image);
     }
@@ -37,7 +32,11 @@ class FirestoreServce {
       print("failed to get location data");
     }
 
-    return await userCollection.doc(uid).collection("ratings").add({
+    DocumentReference doc = userCollection.doc(uid).collection("ratings").doc();
+
+    // TODO: FIX error if geocode fails
+
+    return await doc.set({
       'rName': rName,
       'rCity': rCity,
       'mealName': mealName,
@@ -45,8 +44,9 @@ class FirestoreServce {
       'rating': rating,
       'image': imageUrl,
       'comments': comment,
-      'latitude': coordinates.latitude,
-      'longitude': coordinates.longitude
+      'latitude': coordinates.latitude ?? null,
+      'longitude': coordinates.longitude ?? null,
+      'docID': doc.id
     });
   }
 
@@ -68,6 +68,22 @@ class FirestoreServce {
     return returnURL;
   }
 
+  Future updateRating(FoodRating foodRating) async {
+    return await userCollection
+        .doc(uid)
+        .collection("ratings")
+        .doc(foodRating.docID)
+        .update({'rating': foodRating.rating});
+  }
+
+  Future deleteRating(FoodRating foodRating) async {
+    return await userCollection
+        .doc(uid)
+        .collection("ratings")
+        .doc(foodRating.docID)
+        .delete();
+  }
+
   Future<GeocoderResponse> getLocationData(rName, city) async {
     final geocoder = new Geocoder("c2ef3364e065450098b524f349d373b0");
     return await geocoder.geocode("$rName $city");
@@ -82,7 +98,8 @@ class FirestoreServce {
             date: doc.data()['date'],
             rating: doc.data()['rating'] ?? 1,
             image: doc.data()['image'],
-            comments: doc.data()['comments']))
+            comments: doc.data()['comments'],
+            docID: doc.data()['docID']))
         .toList();
   }
 
