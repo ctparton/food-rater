@@ -6,7 +6,8 @@ import 'package:food_rater/services/recipe_service.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/appuser.dart';
 import 'package:food_rater/services/firestoreService.dart';
-import 'package:food_rater/models/recipe.dart';
+import 'package:food_rater/models/recipe2.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RatingsDetail extends StatefulWidget {
   final FoodRating detail;
@@ -18,6 +19,13 @@ class RatingsDetail extends StatefulWidget {
 
 class _RatingsDetailState extends State<RatingsDetail> {
   final RecipeService recipeService = RecipeService();
+  Future<Recipe2> recipeRes;
+  bool showIngredients = false;
+
+  initState() {
+    super.initState();
+    recipeRes = recipeService.getRecipe(widget.detail.mealName);
+  }
 
   double rating;
   @override
@@ -117,18 +125,83 @@ class _RatingsDetailState extends State<RatingsDetail> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: FutureBuilder(
-                          future: recipeService.getRecipe("carbonara"),
+                          future: recipeRes,
                           builder: (BuildContext context,
-                              AsyncSnapshot<List<Recipe>> snapshot) {
+                              AsyncSnapshot<Recipe2> snapshot) {
                             if (snapshot.hasData) {
-                              List<Recipe> recipes = snapshot.data;
-                              return ListView(
-                                shrinkWrap: true, // gives error if uncomment
-                                children: recipes
-                                    .map((Recipe r) => ListTile(
-                                          title: Text(r.strArea),
-                                        ))
-                                    .toList(),
+                              return Column(children: [
+                                ListTile(
+                                  title: Text("Ingredients"),
+                                  subtitle: Text("Tap Icon to show"),
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.remove_red_eye_rounded),
+                                    tooltip: 'Show Ingredients',
+                                    onPressed: () {
+                                      setState(() {
+                                        showIngredients = !showIngredients;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                showIngredients
+                                    ? DataTable(
+                                        columns: [
+                                            DataColumn(
+                                              label: Text(
+                                                'Ingredient',
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Text(
+                                                'Amount',
+                                              ),
+                                            ),
+                                          ],
+                                        rows: snapshot
+                                            .data.ingredientsRecipes.entries
+                                            .map((entry) =>
+                                                DataRow(cells: <DataCell>[
+                                                  DataCell(Text(entry.key)),
+                                                  DataCell(Text(entry.value))
+                                                ]))
+                                            .toList())
+                                    : Text(" "),
+                                Column(children: [
+                                  ListTile(
+                                    title: Text("Method"),
+                                    subtitle: Text(
+                                        '${snapshot.data.strInstructions}'),
+                                  ),
+                                  ListTile(
+                                    title: Text("Recipe Source"),
+                                    subtitle: InkWell(
+                                        child: Text(snapshot.data.strSource),
+                                        onTap: () =>
+                                            launch(snapshot.data.strSource)),
+                                  ),
+                                  ListTile(
+                                    title: Text("Video "),
+                                    subtitle: InkWell(
+                                        child: Text(snapshot.data.strYoutube),
+                                        onTap: () =>
+                                            launch(snapshot.data.strYoutube)),
+                                  ),
+                                ]),
+                              ]);
+                            } else if (snapshot.hasError) {
+                              return ListTile(
+                                title:
+                                    Text("Cannot fetch recipe for this meal!"),
+                              );
+                            } else {
+                              if (snapshot.data == null) {
+                                return ListTile(
+                                  title: Text(
+                                      "Cannot fetch recipe for this meal!"),
+                                );
+                              }
+                              return ListTile(
+                                title: Text("Loading"),
                               );
                             }
                           },
