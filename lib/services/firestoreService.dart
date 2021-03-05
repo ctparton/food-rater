@@ -34,8 +34,6 @@ class FirestoreServce {
 
     DocumentReference doc = userCollection.doc(uid).collection("ratings").doc();
 
-    // TODO: FIX error if geocode fails
-
     return await doc.set({
       'rName': rName,
       'rCity': rCity,
@@ -44,8 +42,8 @@ class FirestoreServce {
       'rating': rating,
       'image': imageUrl,
       'comments': comment,
-      'latitude': coordinates.latitude ?? null,
-      'longitude': coordinates.longitude ?? null,
+      'latitude': coordinates != null ? coordinates?.latitude : null,
+      'longitude': coordinates != null ? coordinates?.longitude : null,
       'docID': doc.id
     });
   }

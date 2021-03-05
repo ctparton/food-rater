@@ -2,20 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:food_rater/models/foodrating.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:food_rater/services/recipe_service.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/appuser.dart';
 import 'package:food_rater/services/firestoreService.dart';
+import 'package:food_rater/models/recipe.dart';
 
 class RatingsDetail extends StatefulWidget {
   final FoodRating detail;
 
   RatingsDetail({this.detail});
-
   @override
   _RatingsDetailState createState() => _RatingsDetailState();
 }
 
 class _RatingsDetailState extends State<RatingsDetail> {
+  final RecipeService recipeService = RecipeService();
+
   double rating;
   @override
   Widget build(BuildContext context) {
@@ -113,7 +116,23 @@ class _RatingsDetailState extends State<RatingsDetail> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("fetch recipes here"),
+                        child: FutureBuilder(
+                          future: recipeService.getRecipe("carbonara"),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<Recipe>> snapshot) {
+                            if (snapshot.hasData) {
+                              List<Recipe> recipes = snapshot.data;
+                              return ListView(
+                                shrinkWrap: true, // gives error if uncomment
+                                children: recipes
+                                    .map((Recipe r) => ListTile(
+                                          title: Text(r.strArea),
+                                        ))
+                                    .toList(),
+                              );
+                            }
+                          },
+                        ),
                       )
                     ],
                   ),

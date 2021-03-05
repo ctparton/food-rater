@@ -186,8 +186,8 @@ class _ReviewState extends State<Review> {
                                 },
                               ),
                             ));
-                          } catch (Exception) {
-                            print("Error");
+                          } catch (err) {
+                            print("Error $err");
                           }
                         },
                         child: Text("Rate!"),
