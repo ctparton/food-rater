@@ -11,6 +11,7 @@ class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormBuilderState>();
 
+  String newUsername = '';
   String newEmail = '';
   String newPassword = '';
   String newPasswordConfirm = '';
@@ -28,18 +29,42 @@ class _RegisterState extends State<Register> {
                   SizedBox(
                     height: 20.0,
                   ),
-                  Text("Sign Up to foodMapr"),
+                  FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Sign Up to FoodMapr",
+                        style: TextStyle(fontSize: 100.0),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
                   FormBuilderTextField(
                     decoration: const InputDecoration(
-                      icon: Icon(Icons.person),
+                      icon: Icon(Icons.face),
                       labelText: 'Username *',
+                    ),
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.min(context, 2),
+                      FormBuilderValidators.required(context),
+                    ]),
+                    name: "Username",
+                    onChanged: (value) => setState(() => newUsername = value),
+                  ),
+                  FormBuilderTextField(
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.email),
+                      labelText: 'Email *',
                     ),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.min(context, 2),
                       FormBuilderValidators.required(context),
                       FormBuilderValidators.email(context),
                     ]),
-                    name: "username",
+                    name: "Email",
                     onChanged: (value) => setState(() => newEmail = value),
                   ),
                   FormBuilderTextField(
@@ -51,7 +76,7 @@ class _RegisterState extends State<Register> {
                       FormBuilderValidators.minLength(context, 8),
                       FormBuilderValidators.required(context),
                     ]),
-                    name: "password",
+                    name: "Confrim Password",
                     onChanged: (value) => setState(() => newPassword = value),
                     obscureText: true,
                   ),
@@ -78,8 +103,8 @@ class _RegisterState extends State<Register> {
                     onPressed: () async {
                       _formKey.currentState.save();
                       if (_formKey.currentState.validate()) {
-                        dynamic result =
-                            await _auth.registerUser(newEmail, newPassword);
+                        dynamic result = await _auth.registerUser(
+                            newUsername, newEmail, newPassword);
 
                         if (result == null) {
                           setState(

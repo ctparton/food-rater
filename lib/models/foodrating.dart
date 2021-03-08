@@ -15,6 +15,8 @@ class FoodRating {
   final String image;
   final String comments;
   final String docID;
+  final double latitude;
+  final double longitude;
   final String cuisine;
 
   FoodRating(
@@ -26,6 +28,8 @@ class FoodRating {
       this.image,
       this.comments,
       this.docID,
+      this.latitude,
+      this.longitude,
       this.cuisine});
 
   @override

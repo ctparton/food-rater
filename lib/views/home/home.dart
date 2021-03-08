@@ -5,7 +5,7 @@ import 'package:food_rater/views/map/map.dart';
 import 'package:animations/animations.dart';
 import 'package:food_rater/views/rate/ratings.dart';
 import 'package:food_rater/views/rate/review.dart';
-import 'package:food_rater/views/test.dart';
+import 'package:food_rater/views/profile.dart';
 import 'package:food_rater/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/services/firestoreService.dart';
@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
   int _currentPage = 0;
   final AuthService _auth = AuthService();
 
-  final page = [Ratings(), MapState(), Review(), Test()];
+  final page = [Ratings(), MapState(), Review(), Profile()];
 
   @override
   Widget build(BuildContext context) {

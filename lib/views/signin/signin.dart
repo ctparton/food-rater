@@ -35,13 +35,24 @@ class _SignInState extends State<SignIn> {
                           SizedBox(
                             height: 20.0,
                           ),
-                          SvgPicture.asset('assets/008-catering.svg'),
-                          Text("Sign In"),
+                          FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Welcome, please sign in",
+                                style: TextStyle(fontSize: 400.0),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
                           FormBuilderTextField(
                             decoration: const InputDecoration(
                               icon: Icon(Icons.person),
                               hintText: 'foodlover20',
-                              labelText: 'Username *',
+                              labelText: 'Email *',
                             ),
                             name: "email",
                             validator: FormBuilderValidators.compose([

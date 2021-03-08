@@ -99,7 +99,9 @@ class FirestoreServce {
             image: doc.data()['image'],
             comments: doc.data()['comments'],
             docID: doc.data()['docID'],
-            cuisine: doc.data()['cuisine']))
+            cuisine: doc.data()['cuisine'],
+            latitude: doc.data()['latitude'],
+            longitude: doc.data()['longitude']))
         .toList();
   }
 
