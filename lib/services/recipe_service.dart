@@ -22,7 +22,22 @@ class RecipeService {
         return null;
       }
     } else {
-      throw "can't get posts";
+      throw "Cannot get meal information";
+    }
+  }
+
+  Future<String> getCuisine(String mealName) async {
+    String encondedMealName = Uri.encodeComponent(mealName.trim());
+    Response res = await get('$baseUrl/search.php?s=$encondedMealName');
+    if (res.statusCode == 200) {
+      List<dynamic> body = jsonDecode(res.body)['meals'];
+      if (body != null) {
+        return body[0]['strArea'];
+      } else {
+        return null;
+      }
+    } else {
+      throw "Cannot fetch cuisine information";
     }
   }
 }

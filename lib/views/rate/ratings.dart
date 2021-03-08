@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_rater/models/foodrating.dart';
+import 'package:food_rater/views/common/loading_spinner.dart';
 import 'package:food_rater/views/rate/ratingsDetail.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/appuser.dart';
@@ -24,12 +25,14 @@ class _RatingsState extends State<Ratings> {
     //   print(doc);
     // }
     return Scaffold(
-        body: _ratings.length != null
-            ? ListView.builder(
-                itemCount: _ratings.length ?? 0,
-                itemBuilder: (BuildContext ctxt, int index) =>
-                    buildRatingCard(ctxt, index, _ratings))
-            : Text("You have not made any ratings yet"));
+        body: _ratings != null
+            ? _ratings.length > 0
+                ? ListView.builder(
+                    itemCount: _ratings.length ?? 0,
+                    itemBuilder: (BuildContext ctxt, int index) =>
+                        buildRatingCard(ctxt, index, _ratings))
+                : Text("You have no ratings, make one!")
+            : LoadingSpinner());
   }
 
   Widget buildRatingCard(

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:food_rater/models/appuser.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
+import 'package:food_rater/services/recipe_service.dart';
 
 class Review extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class Review extends StatefulWidget {
 }
 
 class _ReviewState extends State<Review> {
+  final RecipeService recipeService = RecipeService();
   final _formKey = GlobalKey<FormBuilderState>();
   String _rName;
   String _rCity;
@@ -34,6 +36,7 @@ class _ReviewState extends State<Review> {
       _image = null;
       _comments = '';
       _formKey.currentState.reset();
+      FocusScope.of(context).unfocus();
     });
   }
 
@@ -49,6 +52,7 @@ class _ReviewState extends State<Review> {
                     key: _formKey,
                     child: Column(children: [
                       FormBuilderTextField(
+                        autofocus: false,
                         name: "rName",
                         decoration: const InputDecoration(
                           icon: Icon(Icons.place),
@@ -57,6 +61,7 @@ class _ReviewState extends State<Review> {
                         onChanged: (value) => setState(() => _rName = value),
                       ),
                       FormBuilderTextField(
+                          autofocus: false,
                           name: "rCity",
                           decoration: const InputDecoration(
                             icon: Icon(Icons.place),
@@ -64,6 +69,7 @@ class _ReviewState extends State<Review> {
                           ),
                           onChanged: (value) => setState(() => _rCity = value)),
                       FormBuilderTextField(
+                          autofocus: false,
                           name: "mealName",
                           decoration: const InputDecoration(
                             icon: Icon(Icons.set_meal),
@@ -72,6 +78,7 @@ class _ReviewState extends State<Review> {
                           onChanged: (value) =>
                               setState(() => _mealName = value)),
                       FormBuilderDateTimePicker(
+                        autofocus: false,
                         name: 'date',
                         inputType: InputType.date,
                         decoration: InputDecoration(
@@ -166,6 +173,14 @@ class _ReviewState extends State<Review> {
                           FirestoreServce firestoreServce =
                               FirestoreServce(uid: _user.uid);
                           try {
+                            dynamic cuisine;
+                            try {
+                              cuisine =
+                                  await recipeService.getCuisine(_mealName);
+                            } catch (err) {
+                              print("Error $err");
+                            }
+
                             dynamic result = await firestoreServce.addRating(
                                 _rName,
                                 _rCity,
@@ -173,7 +188,8 @@ class _ReviewState extends State<Review> {
                                 DateFormat('dd-MM-yyyy').format(_date),
                                 _rating,
                                 _image,
-                                _comments);
+                                _comments,
+                                cuisine);
                             setState(() {
                               resetForm();
                             });

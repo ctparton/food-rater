@@ -37,6 +37,7 @@ dependencies:
   opencage_geocoder: ^1.0.1
   http: ^0.12.2
   url_launcher: ^5.7.10
+  flutter_spinkit: ^4.1.2+1
   
   
 

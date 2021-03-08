@@ -13,7 +13,7 @@ class FirestoreServce {
   FirestoreServce({this.uid});
 
   Future addRating(rName, rCity, mealName, date, rating,
-      [image, comments]) async {
+      [image, comments, cuisine]) async {
     String comment = comments ?? '';
     String imageUrl;
     dynamic result;
@@ -44,7 +44,8 @@ class FirestoreServce {
       'comments': comment,
       'latitude': coordinates != null ? coordinates?.latitude : null,
       'longitude': coordinates != null ? coordinates?.longitude : null,
-      'docID': doc.id
+      'docID': doc.id,
+      'cuisine': cuisine
     });
   }
 
@@ -97,7 +98,8 @@ class FirestoreServce {
             rating: doc.data()['rating'] ?? 1,
             image: doc.data()['image'],
             comments: doc.data()['comments'],
-            docID: doc.data()['docID']))
+            docID: doc.data()['docID'],
+            cuisine: doc.data()['cuisine']))
         .toList();
   }
 

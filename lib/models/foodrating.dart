@@ -15,6 +15,7 @@ class FoodRating {
   final String image;
   final String comments;
   final String docID;
+  final String cuisine;
 
   FoodRating(
       {this.rName,
@@ -24,7 +25,8 @@ class FoodRating {
       this.rating,
       this.image,
       this.comments,
-      this.docID});
+      this.docID,
+      this.cuisine});
 
   @override
   String toString() => 'Restaurant: $rName, City: $rCity, Rating; $rating)';
