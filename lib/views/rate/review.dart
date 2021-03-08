@@ -8,6 +8,7 @@ import 'package:food_rater/models/appuser.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:food_rater/services/recipe_service.dart';
+import 'package:food_rater/services/auth.dart';
 
 class Review extends StatefulWidget {
   @override
@@ -17,6 +18,8 @@ class Review extends StatefulWidget {
 class _ReviewState extends State<Review> {
   final RecipeService recipeService = RecipeService();
   final _formKey = GlobalKey<FormBuilderState>();
+  final AuthService _auth = AuthService();
+
   String _rName;
   String _rCity;
   String _mealName;
@@ -45,6 +48,20 @@ class _ReviewState extends State<Review> {
     final _user = Provider.of<AppUser>(context);
     return Scaffold(
         resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text("FoodMapr"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.settings,
+                color: Colors.white,
+              ),
+              onPressed: () async {
+                dynamic result = await _auth.signOut();
+              },
+            )
+          ],
+        ),
         body: SingleChildScrollView(
             child: Container(
                 margin: EdgeInsets.all(30.0),

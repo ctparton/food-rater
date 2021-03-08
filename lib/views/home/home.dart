@@ -29,20 +29,20 @@ class _HomeState extends State<Home> {
     return StreamProvider<List<FoodRating>>.value(
       value: FirestoreServce(uid: _user.uid).ratings,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("FoodMapr"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.settings,
-                color: Colors.white,
-              ),
-              onPressed: () async {
-                dynamic result = await _auth.signOut();
-              },
-            )
-          ],
-        ),
+        // appBar: AppBar(
+        //   title: Text("FoodMapr"),
+        //   actions: <Widget>[
+        //     IconButton(
+        //       icon: Icon(
+        //         Icons.settings,
+        //         color: Colors.white,
+        //       ),
+        //       onPressed: () async {
+        //         dynamic result = await _auth.signOut();
+        //       },
+        //     )
+        //   ],
+        // ),
         body: PageTransitionSwitcher(
           transitionBuilder: (Widget child, Animation<double> animation,
               Animation<double> secondaryAnimation) {
@@ -61,12 +61,12 @@ class _HomeState extends State<Home> {
           onTap: (index) => setState(() => _currentPage = index),
           items: [
             BottomNavigationBarItem(
-                label: "Rating", icon: Icon(Icons.local_library_sharp)),
+                label: "Rating", icon: Icon(Icons.local_dining)),
             BottomNavigationBarItem(label: "Map", icon: Icon(Icons.map)),
             BottomNavigationBarItem(
                 label: "Review", icon: Icon(Icons.rate_review_outlined)),
             BottomNavigationBarItem(
-                label: "Profile", icon: Icon(Icons.update_sharp))
+                label: "Profile", icon: Icon(Icons.face_sharp))
           ],
         ),
       ),

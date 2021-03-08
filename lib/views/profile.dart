@@ -4,24 +4,53 @@ import 'package:provider/provider.dart';
 import 'package:food_rater/models/appuser.dart';
 import 'package:food_rater/models/foodrating.dart';
 import 'package:intl/intl.dart';
+import 'package:food_rater/services/auth.dart';
 
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _user = Provider.of<AppUser>(context);
     final _ratings = Provider.of<List<FoodRating>>(context);
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: _ratings != null
-          ? Column(
-              children: [displayProfile(_user, context, _ratings)],
-            )
-          : LoadingSpinner(),
+    final AuthService _auth = AuthService();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("FoodMapr"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () async {
+              dynamic result = await _auth.signOut();
+            },
+          )
+        ],
+      ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        child: _ratings != null
+            ? Column(
+                children: [displayProfile(_user, context, _ratings)],
+              )
+            : LoadingSpinner(),
+      ),
     );
   }
 
   Widget displayProfile(AppUser user, context, ratings) {
-    // print('Ratings are ${}');
+    dynamic totalMeals = ratings
+        .map((e) => e.mealName != null ? e.mealName.toLowerCase().trim() : null)
+        .toSet();
+
+    dynamic totalRestaurants = ratings
+        .map((e) => e.rName != null ? e.rName.toLowerCase().trim() : null)
+        .toSet();
+
+    totalMeals.removeWhere((e) => e == null);
+    totalRestaurants.removeWhere((e) => e == null);
+
     return Column(
       children: [
         Padding(
@@ -35,13 +64,11 @@ class Profile extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-              "Restaurants rated: ${ratings.map((e) => e.rName.toLowerCase().trim()).toSet().length}"),
+          child: Text("Restaurants rated: ${totalRestaurants.length}"),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-              "Meals rated: ${ratings.map((e) => e.mealName.toLowerCase().trim()).toSet().length}"),
+          child: Text("Meals rated: ${totalMeals.length}"),
         ),
       ],
     );
