@@ -4,7 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:food_rater/services/firestore_service.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:food_rater/models/appuser.dart';
+import 'package:food_rater/models/app_user_model.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:food_rater/services/recipe_service.dart';
@@ -116,7 +116,7 @@ class _ReviewState extends State<Review> {
                             labelText: 'Restaurant Name *',
                           ),
                           onChanged: (value) => _onChanged(value)),
-                      listWidget(),
+                      placeResultList(),
                       FormBuilderTextField(
                           autofocus: false,
                           name: "mealName",
@@ -152,10 +152,6 @@ class _ReviewState extends State<Review> {
                         builder: (FormFieldState<dynamic> field) {
                           return InputDecorator(
                             decoration: InputDecoration(
-                              // icon: Icon(Icons.rate_review),
-                              // labelText: "Rating",
-                              // contentPadding:
-                              //     EdgeInsets.only(top: 10.0, bottom: 0.0),
                               border: InputBorder.none,
                               errorText: field.errorText,
                             ),
@@ -254,7 +250,7 @@ class _ReviewState extends State<Review> {
                     ])))));
   }
 
-  Widget listWidget() {
+  Widget placeResultList() {
     return Container(
       child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),

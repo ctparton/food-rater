@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_rater/models/appuser.dart';
+import 'package:food_rater/models/app_user_model.dart';
 import 'package:food_rater/views/signin/signin.dart';
 import 'package:provider/provider.dart';
 import 'home/home.dart';

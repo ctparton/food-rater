@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
 import 'package:provider/provider.dart';
-import 'package:food_rater/models/appuser.dart';
-import 'package:food_rater/models/foodrating.dart';
+import 'package:food_rater/models/app_user_model.dart';
+import 'package:food_rater/models/food_rating_model.dart';
 import 'package:intl/intl.dart';
 import 'package:food_rater/services/auth.dart';
 

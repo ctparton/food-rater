@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:food_rater/models/foodrating.dart';
+import 'package:food_rater/models/food_rating_model.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:food_rater/services/recipe_service.dart';
 import 'package:provider/provider.dart';
-import 'package:food_rater/models/appuser.dart';
+import 'package:food_rater/models/app_user_model.dart';
 import 'package:food_rater/services/firestore_service.dart';
-import 'package:food_rater/models/recipe2.dart';
+import 'package:food_rater/models/recipe_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RatingsDetail extends StatefulWidget {
@@ -19,7 +19,7 @@ class RatingsDetail extends StatefulWidget {
 
 class _RatingsDetailState extends State<RatingsDetail> {
   final RecipeService recipeService = RecipeService();
-  Future<Recipe2> recipeRes;
+  Future<Recipe> recipeRes;
   bool showIngredients = false;
 
   initState() {
@@ -127,7 +127,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
                         child: FutureBuilder(
                           future: recipeRes,
                           builder: (BuildContext context,
-                              AsyncSnapshot<Recipe2> snapshot) {
+                              AsyncSnapshot<Recipe> snapshot) {
                             if (snapshot.hasData) {
                               return Column(children: [
                                 ListTile(

@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'package:food_rater/views/common/loading_spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:food_rater/models/foodrating.dart';
+import 'package:food_rater/models/food_rating_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapState extends StatefulWidget {

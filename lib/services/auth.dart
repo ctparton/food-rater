@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:food_rater/models/appuser.dart';
+import 'package:food_rater/models/app_user_model.dart';
 
 class AuthService {
   // sign in with email and password

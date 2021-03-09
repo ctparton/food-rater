@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:food_rater/models/foodrating.dart';
+import 'package:food_rater/models/food_rating_model.dart';
 import 'package:food_rater/views/map/map.dart';
 import 'package:animations/animations.dart';
 import 'package:food_rater/views/rate/ratings.dart';
@@ -9,7 +9,7 @@ import 'package:food_rater/views/profile.dart';
 import 'package:food_rater/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/services/firestore_service.dart';
-import 'package:food_rater/models/appuser.dart';
+import 'package:food_rater/models/app_user_model.dart';
 
 class Home extends StatefulWidget {
   @override

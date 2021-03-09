@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:food_rater/models/foodrating.dart';
-import 'package:food_rater/services/google_location_service.dart';
+import 'package:food_rater/models/food_rating_model.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
-import 'package:food_rater/views/rate/ratingsDetail.dart';
+import 'package:food_rater/views/rate/ratings_detail.dart';
 import 'package:provider/provider.dart';
-import 'package:food_rater/models/appuser.dart';
+import 'package:food_rater/models/app_user_model.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'package:food_rater/services/auth.dart';
@@ -29,7 +28,6 @@ class _RatingsState extends State<Ratings> {
       _ratings.sort((a, b) => b.rating.compareTo(a.rating));
     }
     Future<List<FoodRating>> search(String search) async {
-      // await Future.delayed(Duration(seconds: 2));
       return search == "empty"
           ? _ratings
           : _ratings

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:food_rater/models/foodrating.dart';
+import 'package:food_rater/models/food_rating_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'dart:io';
