@@ -17,18 +17,64 @@ class _MapStateState extends State<MapState> {
 
   @override
   Widget build(BuildContext context) {
-    final _ratings = Provider.of<List<FoodRating>>(context);
+    final _ratings = Provider.of<List<FoodRating>>(context)
+        .where(
+            (element) => element.latitude != null && element.longitude != null)
+        .toList();
+
     return _ratings != null
-        ? GoogleMap(
-            onMapCreated: (GoogleMapController c) {
-              mapController = c;
-            },
-            markers: createMarkers(_ratings),
-            initialCameraPosition: CameraPosition(
-              target: _center,
-              zoom: 5.0,
+        ? Stack(children: [
+            GoogleMap(
+              mapToolbarEnabled: false,
+              zoomControlsEnabled: false,
+              onMapCreated: (GoogleMapController c) {
+                mapController = c;
+              },
+              markers: createMarkers(_ratings),
+              initialCameraPosition: CameraPosition(
+                target: _center,
+                zoom: 5.0,
+              ),
             ),
-          )
+            Container(
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.fromLTRB(
+                  0, MediaQuery.of(context).size.height * 0.80, 0, 32),
+              child: ListView.builder(
+                  itemExtent: 200,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _ratings.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      color: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: Text(
+                              _ratings[index].rName,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            subtitle: Text(
+                                '${_ratings[index].mealName} on ${_ratings[index].date}',
+                                style: TextStyle(color: Colors.white)),
+                            onTap: () {
+                              mapController.animateCamera(
+                                  CameraUpdate.newCameraPosition(CameraPosition(
+                                      target: LatLng(_ratings[index].latitude,
+                                          _ratings[index].longitude),
+                                      zoom: 15.0)));
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            )
+          ])
         : LoadingSpinner();
   }
 
