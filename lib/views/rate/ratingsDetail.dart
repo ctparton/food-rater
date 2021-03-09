@@ -5,7 +5,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:food_rater/services/recipe_service.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/appuser.dart';
-import 'package:food_rater/services/firestoreService.dart';
+import 'package:food_rater/services/firestore_service.dart';
 import 'package:food_rater/models/recipe2.dart';
 import 'package:url_launcher/url_launcher.dart';
 

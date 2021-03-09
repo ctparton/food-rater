@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_rater/models/foodrating.dart';
+import 'package:food_rater/services/google_location_service.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
 import 'package:food_rater/views/rate/ratingsDetail.dart';
 import 'package:provider/provider.dart';

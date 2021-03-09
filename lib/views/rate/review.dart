@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:food_rater/services/firestoreService.dart';
+import 'package:food_rater/services/firestore_service.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/appuser.dart';
@@ -9,6 +9,8 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:food_rater/services/recipe_service.dart';
 import 'package:food_rater/services/auth.dart';
+import 'package:uuid/uuid.dart';
+import 'package:food_rater/services/google_location_service.dart';
 
 class Review extends StatefulWidget {
   @override
@@ -19,9 +21,12 @@ class _ReviewState extends State<Review> {
   final RecipeService recipeService = RecipeService();
   final _formKey = GlobalKey<FormBuilderState>();
   final AuthService _auth = AuthService();
-
+  String _placeID;
+  var uuid = new Uuid();
+  String _sessionToken;
+  List<dynamic> _placeList = [];
   String _rName;
-  String _rCity;
+  String _rLocation;
   String _mealName;
   dynamic _date;
   double _rating;
@@ -32,15 +37,49 @@ class _ReviewState extends State<Review> {
     print("resetting form");
     setState(() {
       _rName = '';
-      _rCity = '';
+      _rLocation = '';
       _mealName = '';
       _date = '';
       _rating = 1;
       _image = null;
       _comments = '';
+      _placeID = null;
       _formKey.currentState.reset();
       FocusScope.of(context).unfocus();
     });
+  }
+
+  _onChanged(value) {
+    setState(() => _rName = value);
+    bool newSession = false;
+    if (_sessionToken == null) {
+      newSession = true;
+      setState(() {
+        _sessionToken = uuid.v4();
+      });
+    }
+
+    if (!newSession) {
+      getSuggestion(value);
+    }
+  }
+
+  _handleMealChange(value) {
+    _mealName = value;
+    _placeList = [];
+  }
+
+  void getSuggestion(String input) async {
+    print("getting suggestons $input");
+    try {
+      List<dynamic> res = await GoogleLocationService()
+          .getPlaceAutocomplete(input, _sessionToken);
+      setState(() {
+        _placeList = res;
+      });
+    } catch (err) {
+      print(err);
+    }
   }
 
   @override
@@ -63,28 +102,21 @@ class _ReviewState extends State<Review> {
           ],
         ),
         body: SingleChildScrollView(
+            physics: ScrollPhysics(),
             child: Container(
                 margin: EdgeInsets.all(30.0),
                 child: FormBuilder(
                     key: _formKey,
                     child: Column(children: [
                       FormBuilderTextField(
-                        autofocus: false,
-                        name: "rName",
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.place),
-                          labelText: 'Restaurant Name *',
-                        ),
-                        onChanged: (value) => setState(() => _rName = value),
-                      ),
-                      FormBuilderTextField(
                           autofocus: false,
-                          name: "rCity",
+                          name: "rName",
                           decoration: const InputDecoration(
                             icon: Icon(Icons.place),
-                            labelText: 'City *',
+                            labelText: 'Restaurant Name *',
                           ),
-                          onChanged: (value) => setState(() => _rCity = value)),
+                          onChanged: (value) => _onChanged(value)),
+                      listWidget(),
                       FormBuilderTextField(
                           autofocus: false,
                           name: "mealName",
@@ -92,8 +124,7 @@ class _ReviewState extends State<Review> {
                             icon: Icon(Icons.set_meal),
                             labelText: 'Meal Name *',
                           ),
-                          onChanged: (value) =>
-                              setState(() => _mealName = value)),
+                          onChanged: (value) => _handleMealChange(value)),
                       FormBuilderDateTimePicker(
                         autofocus: false,
                         name: 'date',
@@ -161,8 +192,6 @@ class _ReviewState extends State<Review> {
                             });
                           }
                         },
-                        onSaved: (value) => print("In saved called $value"),
-                        onImage: (value) => print("on image called $value"),
                         decoration:
                             const InputDecoration(labelText: 'Pick Photos'),
                         maxImages: 1,
@@ -179,14 +208,9 @@ class _ReviewState extends State<Review> {
                       ),
                       RaisedButton(
                         onPressed: () async {
-                          print("Restaurant is $_rName");
-                          print("City is $_rCity");
-                          print("Meal is $_mealName");
-                          print(
-                              "Date is ${DateFormat('dd-MM-yyyy').format(_date)}");
-                          print("Rating is $_rating");
-                          print("image is $_image");
-                          print("comments are $_comments");
+                          _rLocation = _rName;
+                          _rName = _rName.split(",")[0];
+
                           FirestoreServce firestoreServce =
                               FirestoreServce(uid: _user.uid);
                           try {
@@ -199,14 +223,16 @@ class _ReviewState extends State<Review> {
                             }
 
                             dynamic result = await firestoreServce.addRating(
-                                _rName,
-                                _rCity,
-                                _mealName,
-                                DateFormat('dd-MM-yyyy').format(_date),
-                                _rating,
-                                _image,
-                                _comments,
-                                cuisine);
+                              _rName,
+                              _rLocation,
+                              _placeID,
+                              _mealName,
+                              DateFormat('dd-MM-yyyy').format(_date),
+                              _rating,
+                              _image,
+                              _comments,
+                              cuisine,
+                            );
                             setState(() {
                               resetForm();
                             });
@@ -226,5 +252,30 @@ class _ReviewState extends State<Review> {
                         child: Text("Rate!"),
                       )
                     ])))));
+  }
+
+  Widget listWidget() {
+    return Container(
+      child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: _placeList.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(_placeList[index]["description"]),
+            onTap: () {
+              dynamic place = _placeList[index];
+              setState(() {
+                _placeList = [];
+                _sessionToken = null;
+                _placeID = place['place_id'];
+              });
+              _formKey.currentState.fields['rName']
+                  .didChange(place["description"]);
+            },
+          );
+        },
+      ),
+    );
   }
 }

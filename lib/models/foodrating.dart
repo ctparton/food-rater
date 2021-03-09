@@ -8,7 +8,7 @@ import 'dart:io';
 
 class FoodRating {
   final String rName;
-  final String rCity;
+  final String rLocation;
   final String mealName;
   final String date;
   double rating;
@@ -21,7 +21,7 @@ class FoodRating {
 
   FoodRating(
       {this.rName,
-      this.rCity,
+      this.rLocation,
       this.mealName,
       this.date,
       this.rating,
@@ -33,13 +33,13 @@ class FoodRating {
       this.cuisine});
 
   @override
-  String toString() => 'Restaurant: $rName, City: $rCity, Rating; $rating)';
+  String toString() => 'Restaurant: $rName, City: $rLocation, Rating; $rating)';
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
-    return o is FoodRating && o.rName == rName && o.rCity == rCity;
+    return o is FoodRating && o.rName == rName && o.rLocation == rLocation;
   }
 
   dynamic getImage() {
@@ -57,5 +57,5 @@ class FoodRating {
   }
 
   @override
-  int get hashCode => rName.hashCode ^ rCity.hashCode;
+  int get hashCode => rName.hashCode ^ rLocation.hashCode;
 }

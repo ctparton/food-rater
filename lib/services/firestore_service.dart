@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_rater/models/foodrating.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:opencage_geocoder/opencage_geocoder.dart';
+import "package:google_maps_webservice/geocoding.dart";
 
 class FirestoreServce {
   final String uid;
@@ -12,38 +14,39 @@ class FirestoreServce {
 
   FirestoreServce({this.uid});
 
-  Future addRating(rName, rCity, mealName, date, rating,
+  Future addRating(rName, rLocation, placeID, mealName, date, rating,
       [image, comments, cuisine]) async {
     String comment = comments ?? '';
     String imageUrl;
     dynamic result;
-    Coordinates coordinates;
+    double lat;
+    double lng;
 
     if (image != null) {
       imageUrl = await uploadFile(image);
     }
     try {
-      result = await getLocationData(rName, rCity);
+      result = await getLocationData(rLocation, placeID);
       if (result != null) {
-        Result strongestMatch = result.results.first;
-        coordinates = strongestMatch.geometry;
+        lat = result['lat'];
+        lng = result['lng'];
       }
     } catch (Exception) {
-      print("failed to get location data");
+      print("failed to get location data ${Exception.toString()}");
     }
 
     DocumentReference doc = userCollection.doc(uid).collection("ratings").doc();
 
     return await doc.set({
       'rName': rName,
-      'rCity': rCity,
+      'rLocation': rLocation,
       'mealName': mealName,
       'date': date,
       'rating': rating,
       'image': imageUrl,
       'comments': comment,
-      'latitude': coordinates != null ? coordinates?.latitude : null,
-      'longitude': coordinates != null ? coordinates?.longitude : null,
+      'latitude': lat != null ? lat : null,
+      'longitude': lng != null ? lng : null,
       'docID': doc.id,
       'cuisine': cuisine
     });
@@ -83,16 +86,42 @@ class FirestoreServce {
         .delete();
   }
 
-  Future<GeocoderResponse> getLocationData(rName, city) async {
-    final geocoder = new Geocoder("c2ef3364e065450098b524f349d373b0");
-    return await geocoder.geocode("$rName $city");
+  Future<Map<String, double>> getLocationData(
+      String rLocation, String placeID) async {
+    var locationMap = new Map<String, double>();
+    if (placeID != null) {
+      print("geocoding using google");
+      final geocoding = new GoogleMapsGeocoding(
+          apiKey: "AIzaSyCS-Wk6uzVAnR7AW4U-WdLk2oaUjkFhilU");
+      GeocodingResponse response = await geocoding.searchByPlaceId(placeID);
+      if (response.isOkay) {
+        Location location = response.results.first.geometry.location;
+        locationMap['lat'] = location.lat;
+        locationMap['lng'] = location.lng;
+        return locationMap;
+      } else {
+        throw Exception("Could not get location data");
+      }
+    } else {
+      print("geocoding using opengeocoder");
+      final geocoder = new Geocoder("c2ef3364e065450098b524f349d373b0");
+      GeocoderResponse response = await geocoder.geocode(rLocation);
+      if (response != null) {
+        Coordinates location = response.results.first.geometry;
+        locationMap['lat'] = location.latitude;
+        locationMap['lng'] = location.longitude;
+        return locationMap;
+      } else {
+        throw Exception("Could not get location data");
+      }
+    }
   }
 
   List<FoodRating> _foodRatingFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs
         .map((doc) => FoodRating(
             rName: doc.data()['rName'] ?? '',
-            rCity: doc.data()['rCity'] ?? '',
+            rLocation: doc.data()['rLocation'] ?? '',
             mealName: doc.data()['mealName'],
             date: doc.data()['date'],
             rating: doc.data()['rating'] ?? 1,

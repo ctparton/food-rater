@@ -8,7 +8,7 @@ import 'package:food_rater/views/rate/review.dart';
 import 'package:food_rater/views/profile.dart';
 import 'package:food_rater/services/auth.dart';
 import 'package:provider/provider.dart';
-import 'package:food_rater/services/firestoreService.dart';
+import 'package:food_rater/services/firestore_service.dart';
 import 'package:food_rater/models/appuser.dart';
 
 class Home extends StatefulWidget {

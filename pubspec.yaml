@@ -39,6 +39,8 @@ dependencies:
   url_launcher: ^5.7.10
   flutter_spinkit: ^4.1.2+1
   flappy_search_bar: 1.7.2
+  uuid:
+  google_maps_webservice: ^0.0.19
   
   
 
