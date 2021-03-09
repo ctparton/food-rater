@@ -19,6 +19,7 @@ class RatingsDetail extends StatefulWidget {
 
 class _RatingsDetailState extends State<RatingsDetail> {
   final RecipeService recipeService = RecipeService();
+  final _formKey = GlobalKey<FormBuilderState>();
   Future<Recipe> recipeRes;
   bool showIngredients = false;
 
@@ -28,10 +29,12 @@ class _RatingsDetailState extends State<RatingsDetail> {
   }
 
   double rating;
+  String comments;
   @override
   Widget build(BuildContext context) {
     final _user = Provider.of<AppUser>(context);
     rating = widget.detail.rating;
+    comments = widget.detail.comments;
     return Scaffold(
       body: Center(
         child: CustomScrollView(
@@ -107,9 +110,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(children: [
-                          Expanded(child: Text(widget.detail.comments))
-                        ]),
+                        child: Row(children: [Expanded(child: Text(comments))]),
                       )
                     ],
                   ),
@@ -224,14 +225,12 @@ class _RatingsDetailState extends State<RatingsDetail> {
       context: context,
       builder: (BuildContext context) {
         return Container(
-          height: MediaQuery.of(context).size.height * 0.40,
+          height: MediaQuery.of(context).size.height * 0.65,
           child: BottomSheet(
             onClosing: () {},
             builder: (BuildContext context) {
-              final _formKey = GlobalKey<FormBuilderState>();
               double _rating;
               String _comments;
-              bool b = false;
               return StatefulBuilder(
                 builder: (BuildContext context, setStateModal) => Container(
                   margin: EdgeInsets.all(30.0),
@@ -262,7 +261,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
                               errorText: field.errorText,
                             ),
                             child: RatingBar.builder(
-                                initialRating: 3,
+                                initialRating: 0,
                                 minRating: 1,
                                 direction: Axis.horizontal,
                                 allowHalfRating: false,
@@ -281,13 +280,26 @@ class _RatingsDetailState extends State<RatingsDetail> {
                       SizedBox(
                         height: 20,
                       ),
+                      FormBuilderTextField(
+                        decoration: const InputDecoration(
+                            labelText: 'Update the comments',
+                            icon: Icon(Icons.comment)),
+                        name: "comments",
+                        onChanged: (value) =>
+                            setStateModal(() => _comments = value),
+                      ),
+                      const SizedBox(height: 15),
                       RaisedButton(
                         onPressed: () async {
-                          widget.detail.rating = _rating;
-                          print("Rating is $_rating");
+                          widget.detail.rating =
+                              _rating ?? widget.detail.rating;
+                          widget.detail.comments =
+                              _comments ?? widget.detail.comments;
+
                           try {
                             await firestoreServce.updateRating(widget.detail);
-                            setState(() => rating = widget.detail.rating);
+                            setState(() {});
+                            Navigator.pop(context);
                           } catch (Exception) {
                             print("failed");
                           }
@@ -311,7 +323,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
       context: context,
       builder: (BuildContext context) {
         return Container(
-          height: MediaQuery.of(context).size.height * 0.40,
+          height: MediaQuery.of(context).size.height * 0.65,
           child: BottomSheet(
             onClosing: () {},
             builder: (BuildContext context) {
@@ -326,7 +338,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
                         alignment: Alignment.centerLeft,
                         child: Container(
                           child: Text(
-                            "Rating",
+                            "Are you sure you want to delete this rating?",
                           ),
                         )),
                     SizedBox(
@@ -336,11 +348,13 @@ class _RatingsDetailState extends State<RatingsDetail> {
                       onPressed: () async {
                         try {
                           await firestoreServce.deleteRating(widget.detail);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
                         } catch (Exception) {
                           print("failed");
                         }
                       },
-                      child: Text("Delete Rating!"),
+                      child: Text("Yes, delete rating!"),
                     ),
                   ]),
                 ),

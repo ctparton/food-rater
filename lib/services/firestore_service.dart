@@ -76,7 +76,7 @@ class FirestoreServce {
         .doc(uid)
         .collection("ratings")
         .doc(foodRating.docID)
-        .update({'rating': foodRating.rating});
+        .update({'rating': foodRating.rating, 'comments': foodRating.comments});
   }
 
   Future deleteRating(FoodRating foodRating) async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:food_rater/services/firestore_service.dart';
+import 'package:food_rater/views/settings.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/app_user_model.dart';
@@ -96,7 +97,12 @@ class _ReviewState extends State<Review> {
                 color: Colors.white,
               ),
               onPressed: () async {
-                dynamic result = await _auth.signOut();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SettingsScreen(),
+                  ),
+                );
               },
             )
           ],
@@ -156,7 +162,7 @@ class _ReviewState extends State<Review> {
                               errorText: field.errorText,
                             ),
                             child: RatingBar.builder(
-                                initialRating: 3,
+                                initialRating: 0,
                                 minRating: 1,
                                 direction: Axis.horizontal,
                                 allowHalfRating: false,
@@ -177,7 +183,6 @@ class _ReviewState extends State<Review> {
                         imageQuality: 50,
                         onChanged: (value) {
                           if (value.isNotEmpty) {
-                            print(value.first);
                             setState(() {
                               _image = value.first;
                             });
@@ -218,7 +223,7 @@ class _ReviewState extends State<Review> {
                               print("Error $err");
                             }
 
-                            dynamic result = await firestoreServce.addRating(
+                            await firestoreServce.addRating(
                               _rName,
                               _rLocation,
                               _placeID,

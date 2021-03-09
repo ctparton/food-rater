@@ -13,7 +13,7 @@ class FoodRating {
   final String date;
   double rating;
   final String image;
-  final String comments;
+  String comments;
   final String docID;
   final double latitude;
   final double longitude;

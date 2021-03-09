@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
 import 'package:food_rater/views/rate/ratings_detail.dart';
+import 'package:food_rater/views/settings.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/app_user_model.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
@@ -37,8 +38,6 @@ class _RatingsState extends State<Ratings> {
                   .contains(search.toLowerCase()))
               .toList();
     }
-
-    print(_ratings);
 
     return _ratings != null
         ? Scaffold(
@@ -80,7 +79,12 @@ class _RatingsState extends State<Ratings> {
                     color: Colors.white,
                   ),
                   onPressed: () async {
-                    dynamic result = await _auth.signOut();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SettingsScreen(),
+                      ),
+                    );
                   },
                 )
               ],
@@ -110,11 +114,11 @@ class _RatingsState extends State<Ratings> {
                             shrinkWrap: true,
                             itemCount: _ratings.length ?? 0,
                             itemBuilder: (BuildContext ctxt, int index) =>
-                                buildRatingCard(index, _ratings))
+                                buildRatingCard(_ratings[index]))
                         : Text("You have no ratings, make one!"),
                     onSearch: search,
-                    onItemFound: (FoodRating post, int index) {
-                      return buildRatingCards(index, post);
+                    onItemFound: (FoodRating rating, int index) {
+                      return buildRatingCard(rating);
                     },
                   ),
                 ),
@@ -124,7 +128,7 @@ class _RatingsState extends State<Ratings> {
         : LoadingSpinner();
   }
 
-  Widget buildRatingCard(int index, List<FoodRating> ratings) {
+  Widget buildRatingCard(FoodRating rating) {
     return Container(
         child: Padding(
       padding: const EdgeInsets.all(8.0),
@@ -135,7 +139,7 @@ class _RatingsState extends State<Ratings> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => RatingsDetail(detail: ratings[index]),
+                builder: (context) => RatingsDetail(detail: rating),
               ),
             );
           },
@@ -145,7 +149,7 @@ class _RatingsState extends State<Ratings> {
               padding: const EdgeInsets.all(8.0),
               child: Row(children: [
                 Text(
-                  ratings[index].rName,
+                  rating.rName,
                   style: TextStyle(fontSize: 30),
                 ),
                 Spacer()
@@ -153,57 +157,12 @@ class _RatingsState extends State<Ratings> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(children: [Text(ratings[index].mealName), Spacer()]),
+              child: Row(children: [Text(rating.mealName), Spacer()]),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(children: [
-                Text(ratings[index].rating.toString()),
-                Spacer(),
-                Icon(Icons.star)
-              ]),
-            ),
-          ]),
-        ),
-      ),
-    ));
-  }
-
-  Widget buildRatingCards(int index, FoodRating ratings) {
-    return Container(
-        child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        child: InkWell(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RatingsDetail(detail: ratings),
-              ),
-            );
-          },
-          child: Column(children: [
-            Padding(padding: const EdgeInsets.only(top: 8.0, bottom: 8.0)),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(children: [
-                Text(
-                  ratings.rName,
-                  style: TextStyle(fontSize: 30),
-                ),
-                Spacer()
-              ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(children: [Text(ratings.mealName), Spacer()]),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(children: [
-                Text(ratings.rating.toString()),
+                Text(rating.rating.toString()),
                 Spacer(),
                 Icon(Icons.star)
               ]),

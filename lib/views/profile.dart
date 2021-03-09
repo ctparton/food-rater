@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
+import 'package:food_rater/views/settings.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/app_user_model.dart';
 import 'package:food_rater/models/food_rating_model.dart';
@@ -23,7 +24,12 @@ class Profile extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () async {
-              dynamic result = await _auth.signOut();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(),
+                ),
+              );
             },
           )
         ],
