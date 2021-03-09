@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:opencage_geocoder/opencage_geocoder.dart';
 import "package:google_maps_webservice/geocoding.dart";
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class FirestoreServce {
   final String uid;
@@ -91,8 +92,7 @@ class FirestoreServce {
     var locationMap = new Map<String, double>();
     if (placeID != null) {
       print("geocoding using google");
-      final geocoding = new GoogleMapsGeocoding(
-          apiKey: "AIzaSyCS-Wk6uzVAnR7AW4U-WdLk2oaUjkFhilU");
+      final geocoding = new GoogleMapsGeocoding(apiKey: env['G_KEY']);
       GeocodingResponse response = await geocoding.searchByPlaceId(placeID);
       if (response.isOkay) {
         Location location = response.results.first.geometry.location;
@@ -104,7 +104,7 @@ class FirestoreServce {
       }
     } else {
       print("geocoding using opengeocoder");
-      final geocoder = new Geocoder("c2ef3364e065450098b524f349d373b0");
+      final geocoder = new Geocoder(env['GEO']);
       GeocoderResponse response = await geocoder.geocode(rLocation);
       if (response != null) {
         Coordinates location = response.results.first.geometry;

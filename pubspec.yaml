@@ -41,6 +41,7 @@ dependencies:
   flappy_search_bar: 1.7.2
   uuid:
   google_maps_webservice: ^0.0.19
+  flutter_dotenv: ^3.1.0
   
   
 
@@ -70,6 +71,7 @@ flutter:
     - assets/heart_border.png
     - assets/heart_half.png
     - assets/heart.png
+    - .env
     
 
   # An image asset can refer to one or more resolution-specific "variants", see
