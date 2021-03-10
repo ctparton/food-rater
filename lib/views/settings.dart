@@ -31,6 +31,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: ListTile(
                 title: Text("About App"),
                 leading: Icon(Icons.info),
+                onTap: () => showLicensePage(
+                    context: context, applicationName: "Food Mapr"),
               ),
             ),
             SwitchListTile(
