@@ -9,10 +9,10 @@ class GoogleLocationService {
 
   Future<List<dynamic>> getPlaceAutocomplete(
       String query, String sessionToken) async {
+    print(sessionToken);
     String request =
         '$BASE_URL?input=$query&key=$kPLACES_API_KEY&sessiontoken=$sessionToken';
     var response = await http.get(request);
-    print(response.body);
     if (response.statusCode == 200) {
       return json.decode(response.body)['predictions'];
     } else {

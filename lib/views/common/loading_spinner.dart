@@ -1,19 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:food_rater/models/anim_type.dart';
+import 'package:food_rater/views/common/theme_provider.dart';
+import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
-class LoadingSpinner extends StatelessWidget {
+class LoadingSpinner extends StatefulWidget {
+  final AnimType animationType;
+
+  LoadingSpinner({this.animationType});
+
+  @override
+  _LoadingSpinnerState createState() => _LoadingSpinnerState();
+}
+
+class _LoadingSpinnerState extends State<LoadingSpinner> {
+  String lottieFile;
   @override
   Widget build(BuildContext context) {
+    switch (widget.animationType) {
+      case AnimType.loading:
+        lottieFile = "assets/loading.json";
+        break;
+      case AnimType.rating:
+        lottieFile = "assets/food_loading.json";
+        break;
+      default:
+        throw Exception("Could not find enum");
+        break;
+    }
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Container(
-        color: Colors.white,
-        child: Center(child: SpinKitFadingCircle(
-          itemBuilder: (BuildContext context, int index) {
-            return DecoratedBox(
-              decoration: BoxDecoration(
-                color: index.isEven ? Colors.red : Colors.green,
-              ),
-            );
-          },
-        )));
+        color: themeProvider.isDarkMode ? Colors.black : Colors.white,
+        child: Center(child: Lottie.asset(lottieFile)));
   }
 }

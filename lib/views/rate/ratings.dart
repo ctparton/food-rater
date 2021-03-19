@@ -1,14 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_rater/models/anim_type.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
 import 'package:food_rater/views/rate/ratings_detail.dart';
 import 'package:food_rater/views/settings.dart';
 import 'package:provider/provider.dart';
-import 'package:food_rater/models/app_user_model.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
-import 'package:food_rater/services/auth.dart';
 import 'dart:math' as math;
 
 class Ratings extends StatefulWidget {
@@ -19,11 +18,10 @@ class Ratings extends StatefulWidget {
 class _RatingsState extends State<Ratings> {
   final SearchBarController<FoodRating> _searchBarController =
       SearchBarController();
-  final AuthService _auth = AuthService();
+
   bool sortedDescending = true;
   @override
   Widget build(BuildContext context) {
-    final _user = Provider.of<AppUser>(context);
     final _ratings = Provider.of<List<FoodRating>>(context);
     if (_ratings != null && sortedDescending) {
       _ratings.sort((a, b) => b.rating.compareTo(a.rating));
@@ -115,7 +113,22 @@ class _RatingsState extends State<Ratings> {
                             itemCount: _ratings.length ?? 0,
                             itemBuilder: (BuildContext ctxt, int index) =>
                                 buildRatingCard(_ratings[index]))
-                        : Text("You have no ratings, make one!"),
+                        : Column(
+                            children: [
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Text(
+                                "You have not made any ratings yet!",
+                                style: TextStyle(fontSize: 30),
+                              ),
+                              SvgPicture.asset(
+                                "assets/035-recipebook.svg",
+                                width: 300,
+                                height: 300,
+                              )
+                            ],
+                          ),
                     onSearch: search,
                     onItemFound: (FoodRating rating, int index) {
                       return buildRatingCard(rating);
@@ -125,7 +138,7 @@ class _RatingsState extends State<Ratings> {
               ),
             ),
           )
-        : LoadingSpinner();
+        : LoadingSpinner(animationType: AnimType.loading);
   }
 
   Widget buildRatingCard(FoodRating rating) {
@@ -133,6 +146,9 @@ class _RatingsState extends State<Ratings> {
         child: Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
         child: InkWell(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -163,8 +179,13 @@ class _RatingsState extends State<Ratings> {
               padding: const EdgeInsets.all(8.0),
               child: Row(children: [
                 Text(rating.rating.toString()),
-                Spacer(),
-                Icon(Icons.star)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ImageIcon(
+                    AssetImage("assets/heart.png"),
+                    color: Colors.pink,
+                  ),
+                )
               ]),
             ),
           ]),

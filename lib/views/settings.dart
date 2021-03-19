@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_rater/services/auth.dart';
+import 'package:food_rater/views/common/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -8,8 +10,11 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final AuthService _auth = AuthService();
+
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Settings"),
@@ -36,8 +41,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             SwitchListTile(
-              value: false,
-              onChanged: null,
+              value: themeProvider.isDarkMode,
+              onChanged: (value) {
+                // report error without listen false in log
+                final provider =
+                    Provider.of<ThemeProvider>(context, listen: false);
+                provider.switchTheme(value);
+              },
               title: Text("Dark Theme"),
             )
           ],

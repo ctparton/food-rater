@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:food_rater/models/anim_type.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
 import 'package:food_rater/views/settings.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/app_user_model.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:intl/intl.dart';
-import 'package:food_rater/services/auth.dart';
 
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _user = Provider.of<AppUser>(context);
     final _ratings = Provider.of<List<FoodRating>>(context);
-    final AuthService _auth = AuthService();
 
     return Scaffold(
       appBar: AppBar(
@@ -40,12 +39,13 @@ class Profile extends StatelessWidget {
             ? Column(
                 children: [displayProfile(_user, context, _ratings)],
               )
-            : LoadingSpinner(),
+            : LoadingSpinner(animationType: AnimType.loading),
       ),
     );
   }
 
   Widget displayProfile(AppUser user, context, ratings) {
+    dynamic mostPopular;
     dynamic totalMeals = ratings
         .map((e) => e.mealName != null ? e.mealName.toLowerCase().trim() : null)
         .toSet();
@@ -54,28 +54,87 @@ class Profile extends StatelessWidget {
         .map((e) => e.rName != null ? e.rName.toLowerCase().trim() : null)
         .toSet();
 
-    totalMeals.removeWhere((e) => e == null);
-    totalRestaurants.removeWhere((e) => e == null);
+    if (!ratings.isEmpty) {
+      List cusine = ratings.map((e) => e.cuisine).toList();
+      mostPopular = cusine.toSet().reduce((i, j) =>
+          cusine.where((v) => v == i).length >
+                  cusine.where((v) => v == j).length
+              ? i
+              : j);
+      totalMeals.removeWhere((e) => e == null);
+      totalRestaurants.removeWhere((e) => e == null);
+    }
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("Hi, ${user.displayName ?? ''}"),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.10),
+        CircleAvatar(
+          child: CircleAvatar(
+            backgroundImage:
+                AssetImage("assets/icons8-user-male-skin-type-7-96.png"),
+            radius: 30,
+          ),
+          radius: 50,
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-              "You joined FoodMapr on: ${DateFormat('dd-MM-yyyy').format(user.created).toString()}"),
+            "Hi, ${user.displayName ?? ''}",
+            style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(
+          height: 20,
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("Restaurants rated: ${totalRestaurants.length}"),
-        ),
+            padding: const EdgeInsets.all(12.0),
+            child: Row(children: [
+              Text("Stats", style: TextStyle(fontSize: 30)),
+            ])),
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("Meals rated: ${totalMeals.length}"),
-        ),
+            padding: const EdgeInsets.all(8.0),
+            child: Row(children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(Icons.date_range),
+              ),
+              Text(
+                  "You joined FoodMapr on: ${DateFormat('dd-MM-yyyy').format(user.created).toString()}",
+                  style: TextStyle(fontSize: 20)),
+            ])),
+        Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(Icons.star),
+              ),
+              Text("Restaurants rated: ${totalRestaurants.length}",
+                  style: TextStyle(fontSize: 20)),
+            ])),
+        Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(Icons.local_dining),
+              ),
+              Text("Meals rated: ${totalMeals.length}",
+                  style: TextStyle(fontSize: 20)),
+            ])),
+        Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(Icons.food_bank_sharp),
+              ),
+              mostPopular != null
+                  ? Text("Most rated cuisine: $mostPopular",
+                      style: TextStyle(fontSize: 20))
+                  : Text("You do not have a most rated cuisine yet",
+                      style: TextStyle(fontSize: 20)),
+            ])),
       ],
     );
   }

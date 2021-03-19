@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_rater/models/anim_type.dart';
 import 'package:food_rater/services/auth.dart';
 import 'package:food_rater/views/signin/register.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
 
 class SignIn extends StatefulWidget {
@@ -22,7 +22,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? LoadingSpinner()
+        ? LoadingSpinner(animationType: AnimType.loading)
         : Scaffold(
             resizeToAvoidBottomInset: false,
             body: SingleChildScrollView(
@@ -51,7 +51,6 @@ class _SignInState extends State<SignIn> {
                           FormBuilderTextField(
                             decoration: const InputDecoration(
                               icon: Icon(Icons.person),
-                              hintText: 'foodlover20',
                               labelText: 'Email *',
                             ),
                             name: "email",
@@ -75,25 +74,29 @@ class _SignInState extends State<SignIn> {
                           SizedBox(
                             height: 20.0,
                           ),
-                          RaisedButton(
-                            child: Text('sign in'),
-                            onPressed: () async {
-                              _formKey.currentState.save();
-                              if (_formKey.currentState.validate()) {
-                                setState(() => isLoading = true);
-                                dynamic result =
-                                    await _auth.signIn(email, password);
+                          SizedBox(
+                            width: double.infinity,
+                            child: RaisedButton(
+                              child: Text('Sign In'),
+                              onPressed: () async {
+                                _formKey.currentState.save();
+                                if (_formKey.currentState.validate()) {
+                                  setState(() => isLoading = true);
+                                  dynamic result =
+                                      await _auth.signIn(email, password);
 
-                                if (result == null) {
-                                  setState(() {
-                                    errorMessage = "check details are correct";
-                                    isLoading = false;
-                                  });
-                                } else {
-                                  print(result);
+                                  if (result == null) {
+                                    setState(() {
+                                      isLoading = false;
+                                      errorMessage =
+                                          "Your credentails are incorrect";
+                                    });
+                                  } else {
+                                    print(result);
+                                  }
                                 }
-                              }
-                            },
+                              },
+                            ),
                           ),
                           SizedBox(
                             height: 20.0,
@@ -113,7 +116,10 @@ class _SignInState extends State<SignIn> {
                           SizedBox(
                             height: 20.0,
                           ),
-                          Text(errorMessage)
+                          Text(errorMessage,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red))
                         ],
                       ),
                     ))));

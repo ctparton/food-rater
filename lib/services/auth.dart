@@ -32,12 +32,11 @@ class AuthService {
 
   Future registerUser(String username, String email, String password) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
+      await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       await _auth.currentUser.updateProfile(displayName: username);
       return _userFromFirebase(_auth.currentUser);
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }

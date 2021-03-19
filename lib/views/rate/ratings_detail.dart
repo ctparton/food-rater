@@ -67,39 +67,22 @@ class _RatingsDetailState extends State<RatingsDetail> {
                     child: Text("Consumed on: ${widget.detail.date}",
                         style: TextStyle(
                             fontSize: 25.0, fontWeight: FontWeight.w300))),
-                Container(
-                    height: 100,
-                    child: Card(
-                      color: Colors.green,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(children: [Text("Rating")]),
-                          ),
-                          Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: RatingBar(
-                                initialRating: rating,
-                                ignoreGestures: true,
-                                onRatingUpdate: (value) => null,
-                                ratingWidget: RatingWidget(
-                                  full: Image(
-                                      image: AssetImage('assets/heart.png')),
-                                  half: Image(
-                                      image:
-                                          AssetImage('assets/heart_half.png')),
-                                  empty: Image(
-                                      image: AssetImage(
-                                          'assets/heart_border.png')),
-                                ),
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: 4.0)),
-                          ),
-                        ],
+                // Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RatingBar(
+                      glow: false,
+                      initialRating: rating,
+                      ignoreGestures: true,
+                      onRatingUpdate: (value) => null,
+                      ratingWidget: RatingWidget(
+                        full: Image(image: AssetImage('assets/heart.png')),
+                        half: Image(image: AssetImage('assets/heart_half.png')),
+                        empty:
+                            Image(image: AssetImage('assets/heart_border.png')),
                       ),
-                    )),
+                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0)),
+                ),
                 Card(
                   color: Colors.green,
                   child: Column(

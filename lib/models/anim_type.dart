@@ -1,0 +1,1 @@
+enum AnimType { loading, rating }

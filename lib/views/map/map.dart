@@ -1,6 +1,8 @@
 import 'dart:collection';
+import 'package:food_rater/models/anim_type.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
 import 'package:flutter/material.dart';
+import 'package:food_rater/views/common/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,21 +16,36 @@ class _MapStateState extends State<MapState> {
   Set<Marker> _markers = HashSet<Marker>();
   GoogleMapController mapController;
   final LatLng _center = const LatLng(54.2321181, -6.4204719);
-
+  String style;
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final _ratings = Provider.of<List<FoodRating>>(context)
         .where(
             (element) => element.latitude != null && element.longitude != null)
         .toList();
+
+    if (themeProvider.isDarkMode) {
+      changeMapStyle();
+    } else {
+      if (mapController != null) {
+        // reset from dark style
+        mapController.setMapStyle(null);
+      }
+    }
 
     return _ratings != null
         ? Stack(children: [
             GoogleMap(
               mapToolbarEnabled: false,
               zoomControlsEnabled: false,
-              onMapCreated: (GoogleMapController c) {
+              onMapCreated: (GoogleMapController c) async {
                 mapController = c;
+                if (themeProvider.isDarkMode) {
+                  String style = await DefaultAssetBundle.of(context)
+                      .loadString("assets/map_style_dark.json");
+                  c.setMapStyle(style);
+                }
               },
               markers: createMarkers(_ratings),
               initialCameraPosition: CameraPosition(
@@ -75,7 +92,7 @@ class _MapStateState extends State<MapState> {
                   }),
             )
           ])
-        : LoadingSpinner();
+        : LoadingSpinner(animationType: AnimType.rating);
   }
 
   Set<Marker> createMarkers(List<FoodRating> ratings) {
@@ -92,5 +109,13 @@ class _MapStateState extends State<MapState> {
           .toSet();
     }
     return _markers;
+  }
+
+  void changeMapStyle() async {
+    style = await DefaultAssetBundle.of(context)
+        .loadString("assets/map_style_dark.json");
+    if (mapController != null) {
+      mapController.setMapStyle(style);
+    }
   }
 }

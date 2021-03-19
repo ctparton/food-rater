@@ -37,11 +37,11 @@ dependencies:
   opencage_geocoder: ^1.0.1
   http: ^0.12.2
   url_launcher: ^5.7.10
-  flutter_spinkit: ^4.1.2+1
   flappy_search_bar: 1.7.2
   uuid:
   google_maps_webservice: ^0.0.19
   flutter_dotenv: ^3.1.0
+  lottie: 
   
   
 
@@ -71,6 +71,13 @@ flutter:
     - assets/heart_border.png
     - assets/heart_half.png
     - assets/heart.png
+    - assets/035-recipebook.svg
+    - assets/trail-loading.json
+    - assets/food_carousel_edited.json
+    - assets/map_style_dark.json
+    - assets/icons8-user-male-skin-type-7-96.png
+    - assets/loading.json
+    - assets/food_loading.json
     - .env
     
 

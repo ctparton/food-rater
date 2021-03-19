@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:food_rater/models/anim_type.dart';
 import 'package:food_rater/services/firestore_service.dart';
+import 'package:food_rater/views/common/loading_spinner.dart';
 import 'package:food_rater/views/settings.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +11,6 @@ import 'package:food_rater/models/app_user_model.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:food_rater/services/recipe_service.dart';
-import 'package:food_rater/services/auth.dart';
 import 'package:uuid/uuid.dart';
 import 'package:food_rater/services/google_location_service.dart';
 
@@ -21,7 +22,7 @@ class Review extends StatefulWidget {
 class _ReviewState extends State<Review> {
   final RecipeService recipeService = RecipeService();
   final _formKey = GlobalKey<FormBuilderState>();
-  final AuthService _auth = AuthService();
+  String errorMessage = "";
   String _placeID;
   var uuid = new Uuid();
   String _sessionToken;
@@ -33,6 +34,7 @@ class _ReviewState extends State<Review> {
   double _rating;
   File _image;
   String _comments;
+  bool isLoading = false;
 
   void resetForm() {
     print("resetting form");
@@ -45,6 +47,7 @@ class _ReviewState extends State<Review> {
       _image = null;
       _comments = '';
       _placeID = null;
+      _sessionToken = null;
       _formKey.currentState.reset();
       FocusScope.of(context).unfocus();
     });
@@ -71,7 +74,6 @@ class _ReviewState extends State<Review> {
   }
 
   void getSuggestion(String input) async {
-    print("getting suggestons $input");
     try {
       List<dynamic> res = await GoogleLocationService()
           .getPlaceAutocomplete(input, _sessionToken);
@@ -117,6 +119,7 @@ class _ReviewState extends State<Review> {
                       FormBuilderTextField(
                           autofocus: false,
                           name: "rName",
+                          validator: FormBuilderValidators.required(context),
                           decoration: const InputDecoration(
                             icon: Icon(Icons.place),
                             labelText: 'Restaurant Name *',
@@ -126,6 +129,7 @@ class _ReviewState extends State<Review> {
                       FormBuilderTextField(
                           autofocus: false,
                           name: "mealName",
+                          validator: FormBuilderValidators.required(context),
                           decoration: const InputDecoration(
                             icon: Icon(Icons.set_meal),
                             labelText: 'Meal Name *',
@@ -134,6 +138,9 @@ class _ReviewState extends State<Review> {
                       FormBuilderDateTimePicker(
                         autofocus: false,
                         name: 'date',
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(context),
+                        ]),
                         inputType: InputType.date,
                         decoration: InputDecoration(
                             labelText: 'Consumed On',
@@ -151,10 +158,7 @@ class _ReviewState extends State<Review> {
                             ),
                           )),
                       FormBuilderField(
-                        name: "name",
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(context),
-                        ]),
+                        name: "rating",
                         builder: (FormFieldState<dynamic> field) {
                           return InputDecorator(
                             decoration: InputDecoration(
@@ -180,14 +184,14 @@ class _ReviewState extends State<Review> {
                       ),
                       FormBuilderImagePicker(
                         name: 'photos',
-                        imageQuality: 50,
+                        imageQuality: 40,
+                        iconColor: Colors.blue,
                         onChanged: (value) {
                           if (value.isNotEmpty) {
                             setState(() {
                               _image = value.first;
                             });
                           } else {
-                            print("Clearing");
                             setState(() {
                               _image = null;
                             });
@@ -207,51 +211,80 @@ class _ReviewState extends State<Review> {
                       SizedBox(
                         height: 20,
                       ),
-                      RaisedButton(
-                        onPressed: () async {
-                          _rLocation = _rName;
-                          _rName = _rName.split(",")[0];
+                      SizedBox(
+                        width: double.infinity,
+                        child: RaisedButton(
+                          onPressed: () async {
+                            _formKey.currentState.save();
+                            if (_formKey.currentState.validate()) {
+                              setState(() => isLoading = true);
+                              _rLocation = _rName;
+                              _rName = _rName.split(",")[0];
 
-                          FirestoreServce firestoreServce =
-                              FirestoreServce(uid: _user.uid);
-                          try {
-                            dynamic cuisine;
-                            try {
-                              cuisine =
-                                  await recipeService.getCuisine(_mealName);
-                            } catch (err) {
-                              print("Error $err");
+                              FirestoreServce firestoreServce =
+                                  FirestoreServce(uid: _user.uid);
+                              try {
+                                String cuisine;
+                                try {
+                                  cuisine =
+                                      await recipeService.getCuisine(_mealName);
+                                } catch (err) {
+                                  cuisine = null;
+                                }
+
+                                await firestoreServce.addRating(
+                                  _rName,
+                                  _rLocation,
+                                  _placeID,
+                                  _mealName,
+                                  DateFormat('dd-MM-yyyy').format(_date),
+                                  _rating,
+                                  _image,
+                                  _comments,
+                                  cuisine,
+                                );
+                                setState(() {
+                                  isLoading = false;
+                                  resetForm();
+                                });
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text('Rating submitted'),
+                                  action: SnackBarAction(
+                                    label: 'View',
+                                    onPressed: () {},
+                                  ),
+                                ));
+                              } catch (err) {
+                                setState(() {
+                                  isLoading = false;
+                                  errorMessage =
+                                      "An error has occured making the rating";
+                                });
+                              }
                             }
-
-                            await firestoreServce.addRating(
-                              _rName,
-                              _rLocation,
-                              _placeID,
-                              _mealName,
-                              DateFormat('dd-MM-yyyy').format(_date),
-                              _rating,
-                              _image,
-                              _comments,
-                              cuisine,
-                            );
-                            setState(() {
-                              resetForm();
-                            });
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text('Rating submitted'),
-                              action: SnackBarAction(
-                                label: 'View',
-                                onPressed: () {
-                                  // Some code to undo the change.
-                                },
-                              ),
-                            ));
-                          } catch (err) {
-                            print("Error $err");
-                          }
-                        },
-                        child: Text("Rate!"),
-                      )
+                          },
+                          child: Text("Rate!",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      isLoading
+                          ? Container(
+                              width: 300,
+                              height: 300,
+                              margin: EdgeInsets.all(40),
+                              padding: EdgeInsets.only(bottom: 24),
+                              alignment: Alignment.center,
+                              child: LoadingSpinner(
+                                  animationType: AnimType.rating))
+                          : Text(errorMessage,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red))
                     ])))));
   }
 
