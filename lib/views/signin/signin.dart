@@ -35,12 +35,15 @@ class _SignInState extends State<SignIn> {
                           SizedBox(
                             height: 20.0,
                           ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.20,
+                          ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                "Welcome, please sign in",
+                                "Welcome to FoodMapr",
                                 style: TextStyle(fontSize: 400.0),
                               ),
                             ),
@@ -77,7 +80,10 @@ class _SignInState extends State<SignIn> {
                           SizedBox(
                             width: double.infinity,
                             child: RaisedButton(
-                              child: Text('Sign In'),
+                              child: Text(
+                                'Sign In',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               onPressed: () async {
                                 _formKey.currentState.save();
                                 if (_formKey.currentState.validate()) {
@@ -89,7 +95,7 @@ class _SignInState extends State<SignIn> {
                                     setState(() {
                                       isLoading = false;
                                       errorMessage =
-                                          "Your credentails are incorrect";
+                                          "Your credentials are incorrect";
                                     });
                                   } else {
                                     print(result);
@@ -99,11 +105,17 @@ class _SignInState extends State<SignIn> {
                             ),
                           ),
                           SizedBox(
-                            height: 20.0,
+                            height: 30.0,
                           ),
                           new Center(
                               child: new InkWell(
-                            child: new Text("Don't have an account? Sign Up"),
+                            child: new Text(
+                              "Don't have an account? Sign Up here",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 18,
+                                  color: Colors.grey[500]),
+                            ),
                             onTap: () {
                               Navigator.push(
                                 context,

@@ -32,7 +32,7 @@ class _RegisterState extends State<Register> {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: 20.0,
+                        height: MediaQuery.of(context).size.height * 0.20,
                       ),
                       FittedBox(
                         fit: BoxFit.fitHeight,
@@ -108,7 +108,10 @@ class _RegisterState extends State<Register> {
                       SizedBox(
                         width: double.infinity,
                         child: RaisedButton(
-                          child: Text('Register'),
+                          child: Text(
+                            'Register',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           onPressed: () async {
                             _formKey.currentState.save();
                             if (_formKey.currentState.validate()) {
