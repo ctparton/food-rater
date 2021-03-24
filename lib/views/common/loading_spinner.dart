@@ -4,6 +4,7 @@ import 'package:food_rater/views/common/theme_provider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+/// Provides re-usable loading widgets to the app with various [animationType]
 class LoadingSpinner extends StatefulWidget {
   final AnimType animationType;
 
@@ -15,6 +16,9 @@ class LoadingSpinner extends StatefulWidget {
 
 class _LoadingSpinnerState extends State<LoadingSpinner> {
   String lottieFile;
+
+  /// Displays the appropriate [LottieAnimation] depending on the [animationType]
+  /// which is themed as appropriate
   @override
   Widget build(BuildContext context) {
     switch (widget.animationType) {
@@ -30,7 +34,7 @@ class _LoadingSpinnerState extends State<LoadingSpinner> {
     }
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Container(
-        color: themeProvider.isDarkMode ? Colors.black : Colors.white,
+        color: themeProvider.isDarkMode ? Colors.grey.shade900 : Colors.white,
         child: Center(child: Lottie.asset(lottieFile)));
   }
 }

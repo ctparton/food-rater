@@ -1,11 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_rater/models/app_user_model.dart';
 
+/// Service class to handle all interactions with Firebase Authentication
+///
+/// Handles Sign In, Sign Out, Regrestration and Decoding of the raw [User]
+/// response from Firebase Auth
 class AuthService {
-  // sign in with email and password
-
+  /// Instance of Firebase Authentication
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  /// Returns an [AppUser] object if [User] in response from Firebase Auth
   AppUser _userFromFirebase(User user) {
     return user != null
         ? AppUser(
@@ -15,21 +19,26 @@ class AuthService {
         : null;
   }
 
+  /// Listens for changes in the authentication status (Sign In / Sign Out) and
+  /// returns the current authentication state as a stream of [AppUser]
   Stream<AppUser> get user {
     return _auth.authStateChanges().map((User u) => _userFromFirebase(u));
   }
 
+  /// Returns the signed in [AppUser] if sign in is successful, otherwise
+  /// null is returned
   Future signIn(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       return _userFromFirebase(result.user);
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
 
+  /// Registers a user with a [username], [email] and [password] and returns an
+  /// [AppUser] if registration is successful, otherwise returns null
   Future registerUser(String username, String email, String password) async {
     try {
       await _auth.createUserWithEmailAndPassword(
@@ -41,6 +50,7 @@ class AuthService {
     }
   }
 
+  /// Signs the user out, if successful the [AuthStateChanges] is modified
   Future signOut() async {
     return await _auth.signOut();
   }

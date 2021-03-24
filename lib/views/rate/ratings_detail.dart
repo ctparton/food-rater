@@ -9,6 +9,7 @@ import 'package:food_rater/services/firestore_service.dart';
 import 'package:food_rater/models/recipe_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// A class which creates the Ratings Detail Page
 class RatingsDetail extends StatefulWidget {
   final FoodRating detail;
 
@@ -17,17 +18,20 @@ class RatingsDetail extends StatefulWidget {
   _RatingsDetailState createState() => _RatingsDetailState();
 }
 
+/// A class to hold the state of the page and display the information
 class _RatingsDetailState extends State<RatingsDetail> {
   final RecipeService recipeService = RecipeService();
   final _formKey = GlobalKey<FormBuilderState>();
   Future<Recipe> recipeRes;
   bool showIngredients = false;
 
+  // When the state is initialised, make a request to get recipe information
   initState() {
     super.initState();
     recipeRes = recipeService.getRecipe(widget.detail.mealName);
   }
 
+  // Rating and comment are not final, these can be be updated by the user
   double rating;
   String comments;
   @override
@@ -112,6 +116,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
                           future: recipeRes,
                           builder: (BuildContext context,
                               AsyncSnapshot<Recipe> snapshot) {
+                            // If there is a recipe for this meal
                             if (snapshot.hasData) {
                               return Column(children: [
                                 ListTile(
@@ -202,6 +207,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
     );
   }
 
+  /// Shows modal window for editing a particular rating
   _ratingEditBottomModal(BuildContext context, AppUser user) {
     FirestoreServce firestoreServce = FirestoreServce(uid: user.uid);
     showModalBottomSheet(
@@ -272,22 +278,24 @@ class _RatingsDetailState extends State<RatingsDetail> {
                             setStateModal(() => _comments = value),
                       ),
                       const SizedBox(height: 15),
-                      RaisedButton(
-                        onPressed: () async {
-                          widget.detail.rating =
-                              _rating ?? widget.detail.rating;
-                          widget.detail.comments =
-                              _comments ?? widget.detail.comments;
+                      SizedBox(
+                        width: double.infinity,
+                        child: RaisedButton(
+                          onPressed: () async {
+                            widget.detail.rating =
+                                _rating ?? widget.detail.rating;
+                            widget.detail.comments =
+                                _comments ?? widget.detail.comments;
 
-                          try {
-                            await firestoreServce.updateRating(widget.detail);
-                            setState(() {});
-                            Navigator.pop(context);
-                          } catch (Exception) {
-                            print("failed");
-                          }
-                        },
-                        child: Text("Rate!"),
+                            try {
+                              await firestoreServce.updateRating(widget.detail);
+                              setState(() {});
+                              Navigator.pop(context);
+                            } catch (Exception) {}
+                          },
+                          child: Text("Rate!",
+                              style: TextStyle(color: Colors.white)),
+                        ),
                       ),
                     ]),
                   ),
@@ -300,6 +308,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
     );
   }
 
+  /// Shows modal window for deleting a particular rating
   _ratingDeleteBottomModal(BuildContext context, AppUser user) {
     FirestoreServce firestoreServce = FirestoreServce(uid: user.uid);
     showModalBottomSheet(
@@ -327,17 +336,20 @@ class _RatingsDetailState extends State<RatingsDetail> {
                     SizedBox(
                       height: 20,
                     ),
-                    RaisedButton(
-                      onPressed: () async {
-                        try {
-                          await firestoreServce.deleteRating(widget.detail);
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        } catch (Exception) {
-                          print("failed");
-                        }
-                      },
-                      child: Text("Yes, delete rating!"),
+                    SizedBox(
+                      width: double.infinity,
+                      child: RaisedButton(
+                        onPressed: () async {
+                          try {
+                            await firestoreServce.deleteRating(widget.detail);
+                            // Pop views to get back to the ratings page
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          } catch (Exception) {}
+                        },
+                        child: Text("Yes, delete rating!",
+                            style: TextStyle(color: Colors.white)),
+                      ),
                     ),
                   ]),
                 ),

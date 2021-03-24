@@ -14,6 +14,8 @@ import 'package:food_rater/services/recipe_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:food_rater/services/google_location_service.dart';
 
+/// A class to build the form allowing a user to review a particular food and
+/// save this data to Firestore.
 class Review extends StatefulWidget {
   @override
   _ReviewState createState() => _ReviewState();
@@ -36,6 +38,7 @@ class _ReviewState extends State<Review> {
   String _comments;
   bool isLoading = false;
 
+  // resets the form and the state
   void resetForm() {
     print("resetting form");
     setState(() {
@@ -48,15 +51,20 @@ class _ReviewState extends State<Review> {
       _comments = '';
       _placeID = null;
       _sessionToken = null;
+      // Clears the form
       _formKey.currentState.reset();
+      // Unfocuses the keyboard
       FocusScope.of(context).unfocus();
     });
   }
 
-  _onChanged(value) {
+  /// If the value of the restaurant name field changes call the Google Places
+  /// Autocomplete API
+  _onRestaurantNameChange(value) {
     setState(() => _rName = value);
     bool newSession = false;
     if (_sessionToken == null) {
+      // Create a new session token
       newSession = true;
       setState(() {
         _sessionToken = uuid.v4();
@@ -68,11 +76,12 @@ class _ReviewState extends State<Review> {
     }
   }
 
-  _handleMealChange(value) {
+  _onMealNameChange(value) {
     _mealName = value;
     _placeList = [];
   }
 
+  /// Makes the actual call to Google places and sets the [_placeList] with the response
   void getSuggestion(String input) async {
     try {
       List<dynamic> res = await GoogleLocationService()
@@ -124,7 +133,7 @@ class _ReviewState extends State<Review> {
                             icon: Icon(Icons.place),
                             labelText: 'Restaurant Name *',
                           ),
-                          onChanged: (value) => _onChanged(value)),
+                          onChanged: (value) => _onRestaurantNameChange(value)),
                       placeResultList(),
                       FormBuilderTextField(
                           autofocus: false,
@@ -134,7 +143,7 @@ class _ReviewState extends State<Review> {
                             icon: Icon(Icons.set_meal),
                             labelText: 'Meal Name *',
                           ),
-                          onChanged: (value) => _handleMealChange(value)),
+                          onChanged: (value) => _onMealNameChange(value)),
                       FormBuilderDateTimePicker(
                         autofocus: false,
                         name: 'date',
@@ -184,7 +193,7 @@ class _ReviewState extends State<Review> {
                       ),
                       FormBuilderImagePicker(
                         name: 'photos',
-                        imageQuality: 40,
+                        imageQuality: 60,
                         iconColor: Colors.blue,
                         onChanged: (value) {
                           if (value.isNotEmpty) {
@@ -219,6 +228,7 @@ class _ReviewState extends State<Review> {
                             if (_formKey.currentState.validate()) {
                               setState(() => isLoading = true);
                               _rLocation = _rName;
+                              // Get the name of the restaurant from the address
                               _rName = _rName.split(",")[0];
 
                               FirestoreServce firestoreServce =
@@ -288,6 +298,7 @@ class _ReviewState extends State<Review> {
                     ])))));
   }
 
+  /// Builds a tile for each returned prediction from the Google Places API
   Widget placeResultList() {
     return Container(
       child: ListView.builder(

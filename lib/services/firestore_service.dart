@@ -8,13 +8,22 @@ import 'package:opencage_geocoder/opencage_geocoder.dart';
 import "package:google_maps_webservice/geocoding.dart";
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+/// Service class to handle all interactions with FireStore
+///
+/// This class currently handles upload and retrieval of the food ratings
 class FirestoreServce {
   final String uid;
+
+  /// Instance of the firestore users collection
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection("users");
 
   FirestoreServce({this.uid});
 
+  /// Returns a [Future] after uploading a food rating to Firestore SQL
+  ///
+  /// This method also calls helper methods to upload any image and get
+  /// location data of the rating
   Future addRating(rName, rLocation, placeID, mealName, date, rating,
       [image, comments, cuisine]) async {
     String comment = comments ?? '';
@@ -53,6 +62,8 @@ class FirestoreServce {
     });
   }
 
+  /// Returns a [Future<String>] of the cloud firebase storage location of the
+  /// uploaded file if the upload is successful, else returns null
   Future<String> uploadFile(File _image) async {
     String returnURL;
     bool fileExists = await _image.exists();
@@ -60,9 +71,11 @@ class FirestoreServce {
       Reference storageReference = FirebaseStorage.instance
           .ref()
           .child('meals/${p.basename(_image.path)}');
+      // Create the task for uploading the file
       UploadTask uploadTask = storageReference.putFile(_image);
       await uploadTask.whenComplete(() => print('File Uploaded'));
 
+      // Gets the URL of the uploaded image
       await storageReference.getDownloadURL().then((fileURL) {
         returnURL = fileURL;
       });
@@ -71,6 +84,7 @@ class FirestoreServce {
     return returnURL;
   }
 
+  /// Returns a [Future] with the updated [FoodRating] or an error
   Future updateRating(FoodRating foodRating) async {
     return await userCollection
         .doc(uid)
@@ -79,6 +93,7 @@ class FirestoreServce {
         .update({'rating': foodRating.rating, 'comments': foodRating.comments});
   }
 
+  /// Returns a [Future] with the deleted [FoodRating] or an error
   Future deleteRating(FoodRating foodRating) async {
     return await userCollection
         .doc(uid)
@@ -87,11 +102,15 @@ class FirestoreServce {
         .delete();
   }
 
+  /// Retrieves the location data from a [String] location in the form
+  /// "Restaurant Name, Location" or a [String] google Places ID
+  ///
+  /// Returns a [Map] of lat, lng strings to the actual location data if
+  /// successful
   Future<Map<String, double>> getLocationData(
       String rLocation, String placeID) async {
     var locationMap = new Map<String, double>();
     if (placeID != null) {
-      print("geocoding using google");
       final geocoding = new GoogleMapsGeocoding(apiKey: env['G_KEY']);
       GeocodingResponse response = await geocoding.searchByPlaceId(placeID);
       if (response.isOkay) {
@@ -103,7 +122,7 @@ class FirestoreServce {
         throw Exception("Could not get location data");
       }
     } else {
-      print("geocoding using opengeocoder");
+      // If there is not a placeID associated with the FoodRating
       final geocoder = new Geocoder(env['GEO']);
       GeocoderResponse response = await geocoder.geocode(rLocation);
       if (response != null) {
@@ -117,6 +136,8 @@ class FirestoreServce {
     }
   }
 
+  /// Returns a list of [FoodRating] objects with each document in a snapshot
+  /// from firestore getting mapped to a [FoodRating] object
   List<FoodRating> _foodRatingFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs
         .map((doc) => FoodRating(
@@ -134,6 +155,8 @@ class FirestoreServce {
         .toList();
   }
 
+  /// Returns a stream of [FoodRating] if any new changes to the ratings
+  /// collection are made
   Stream<List<FoodRating>> get ratings {
     var ref = userCollection.doc(uid).collection("ratings");
     return ref.snapshots().map(_foodRatingFromSnapshot);

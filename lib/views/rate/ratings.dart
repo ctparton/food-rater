@@ -10,6 +10,7 @@ import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'dart:math' as math;
 
+/// A class to handle the list of ratings
 class Ratings extends StatefulWidget {
   @override
   _RatingsState createState() => _RatingsState();
@@ -26,6 +27,8 @@ class _RatingsState extends State<Ratings> {
     if (_ratings != null && sortedDescending) {
       _ratings.sort((a, b) => b.rating.compareTo(a.rating));
     }
+
+    /// Returns the filtered _ratings list based on [search]
     Future<List<FoodRating>> search(String search) async {
       return search == "empty"
           ? _ratings
@@ -62,7 +65,6 @@ class _RatingsState extends State<Ratings> {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            print(_ratings);
                             setState(() {
                               sortedDescending = !sortedDescending;
                               _ratings
@@ -141,6 +143,7 @@ class _RatingsState extends State<Ratings> {
         : LoadingSpinner(animationType: AnimType.loading);
   }
 
+  /// Creates an individual ratings card
   Widget buildRatingCard(FoodRating rating) {
     return Container(
         child: Padding(

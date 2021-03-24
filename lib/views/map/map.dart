@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+/// A class which builds the Map view tab
 class MapState extends StatefulWidget {
   @override
   _MapStateState createState() => _MapStateState();
@@ -20,6 +21,7 @@ class _MapStateState extends State<MapState> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    // Gets the food ratings and removes any that do not have a location
     final _ratings = Provider.of<List<FoodRating>>(context)
         .where(
             (element) => element.latitude != null && element.longitude != null)
@@ -95,6 +97,8 @@ class _MapStateState extends State<MapState> {
         : LoadingSpinner(animationType: AnimType.rating);
   }
 
+  /// Returns a set of [Marker] based on the locations in the current
+  /// [FoodRating] objects
   Set<Marker> createMarkers(List<FoodRating> ratings) {
     if (ratings != null) {
       ratings = ratings
@@ -111,6 +115,7 @@ class _MapStateState extends State<MapState> {
     return _markers;
   }
 
+  /// Changes the map style to the dark style, if the theme dictates
   void changeMapStyle() async {
     style = await DefaultAssetBundle.of(context)
         .loadString("assets/map_style_dark.json");

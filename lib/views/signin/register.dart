@@ -4,6 +4,7 @@ import 'package:food_rater/services/auth.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
 
+/// A class to handle the registration form to allow a new user to sign up
 class Register extends StatefulWidget {
   @override
   _RegisterState createState() => _RegisterState();

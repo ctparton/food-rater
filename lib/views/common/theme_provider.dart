@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A class to provide a theme to all widgets in the widget tree
 class ThemeProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.light;
 
@@ -7,11 +8,12 @@ class ThemeProvider extends ChangeNotifier {
 
   void switchTheme(bool isOn) {
     themeMode = isOn ? ThemeMode.dark : ThemeMode.light;
-
+    // Updates descendent widgets
     notifyListeners();
   }
 }
 
+/// The light and dark theme definitions for the app
 class CustomThemes {
   static final darkTheme = ThemeData(
       accentColor: Colors.green[400],

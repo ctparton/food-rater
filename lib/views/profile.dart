@@ -7,6 +7,8 @@ import 'package:food_rater/models/app_user_model.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:intl/intl.dart';
 
+/// A Profile class to show the user their current stats such as when they
+/// joined FoodMapr and their total ratings
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,7 @@ class Profile extends StatelessWidget {
     );
   }
 
+  /// Displays the actual profile of the user as well as their stats
   Widget displayProfile(AppUser user, context, ratings) {
     dynamic mostPopular;
     dynamic totalMeals = ratings
@@ -56,6 +59,7 @@ class Profile extends StatelessWidget {
 
     if (!ratings.isEmpty) {
       List cusine = ratings.map((e) => e.cuisine).toList();
+      // Gets the most popular type of cuisine in the users ratings
       mostPopular = cusine.toSet().reduce((i, j) =>
           cusine.where((v) => v == i).length >
                   cusine.where((v) => v == j).length
@@ -79,7 +83,7 @@ class Profile extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            "Hi, ${user.displayName ?? ''}",
+            "Hi ${user.displayName ?? ''}",
             style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
           ),
         ),

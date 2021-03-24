@@ -9,6 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:food_rater/services/firestore_service.dart';
 import 'package:food_rater/models/app_user_model.dart';
 
+/// The Home class which holds the [BottomNavigationBar] and passes the
+/// list of [FoodRating] to the descendent Rating, Review, Profile and Map
+/// pages
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -23,6 +26,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final _user = Provider.of<AppUser>(context);
 
+    // Provide the FoodRatings to all widgets
     return StreamProvider<List<FoodRating>>.value(
       value: FirestoreServce(uid: _user.uid).ratings,
       child: Scaffold(
@@ -35,6 +39,7 @@ class _HomeState extends State<Home> {
               child: child,
             );
           },
+          // The Indexed Stack ensures the state of each tab is retained
           child: IndexedStack(index: _currentPage, children: page),
         ),
         bottomNavigationBar: BottomNavigationBar(

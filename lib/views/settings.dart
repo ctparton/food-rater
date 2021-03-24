@@ -3,6 +3,7 @@ import 'package:food_rater/services/auth.dart';
 import 'package:food_rater/views/common/theme_provider.dart';
 import 'package:provider/provider.dart';
 
+// A class to show the settigns page of the application
 class SettingsScreen extends StatefulWidget {
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
@@ -40,10 +41,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     context: context, applicationName: "Food Mapr"),
               ),
             ),
+            // Dark theme toggle
             SwitchListTile(
               value: themeProvider.isDarkMode,
               onChanged: (value) {
-                // report error without listen false in log
                 final provider =
                     Provider.of<ThemeProvider>(context, listen: false);
                 provider.switchTheme(value);

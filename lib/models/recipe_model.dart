@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+/// A model for serialization of recipes retrieved from the MealDB API
+/// source: https://www.themealdb.com/api.php
 class Recipe {
   final String idMeal;
   final String strMeal;
@@ -11,6 +13,7 @@ class Recipe {
   final String strYoutube;
   final Map ingredientsRecipes;
   final String strSource;
+
   Recipe(
       {this.idMeal,
       this.strMeal,
@@ -23,6 +26,7 @@ class Recipe {
       this.ingredientsRecipes,
       this.strSource});
 
+  /// Decodes a single Recipe json response into a Recipe object
   factory Recipe.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
@@ -38,7 +42,10 @@ class Recipe {
         ingredientsRecipes: buildIngredientsMap(map),
         strSource: map['strSource']);
   }
+
+  // Returns a map of all the ingredients in the response
   static Map<dynamic, dynamic> buildIngredientsMap(map) {
+    // Each recipe has ingredients from ingredient 1 up to 21 ingredients
     final foodIngredientsMap = {
       for (var a = 1; a < 21; a += 1)
         map['strIngredient$a']: map['strMeasure$a']
@@ -46,5 +53,6 @@ class Recipe {
     return foodIngredientsMap;
   }
 
+  /// Helper method to do response decoding
   factory Recipe.fromJson(String source) => Recipe.fromMap(json.decode(source));
 }

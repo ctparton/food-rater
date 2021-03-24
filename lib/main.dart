@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 
+/// Loads env variables and starts up firebase
 void main() async {
   await DotEnv.load();
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,8 +14,9 @@ void main() async {
   runApp(MyApp());
 }
 
+/// Application root which provides the current user and the theme to the
+/// descendent widgets
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
