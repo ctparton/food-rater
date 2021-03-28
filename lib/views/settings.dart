@@ -128,7 +128,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               FlatButton(
                 onPressed: () async => {
                   Navigator.pop(context),
-                  print(selectedRadio),
                   await _auth.updateAvatar(selectedRadio)
                 },
                 child: Text('Confirm'),

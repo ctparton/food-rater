@@ -57,6 +57,11 @@ class Profile extends StatelessWidget {
         .map((e) => e.rName != null ? e.rName.toLowerCase().trim() : null)
         .toSet();
 
+    dynamic totalCountries = ratings
+        .map((e) => e.rLocation.split(",").removeLast() != null
+            ? e.rLocation.split(",").removeLast().toLowerCase().trim()
+            : null)
+        .toSet();
     if (!ratings.isEmpty) {
       List cusine = ratings.map((e) => e.cuisine).toList();
       // Gets the most popular type of cuisine in the users ratings
@@ -65,9 +70,11 @@ class Profile extends StatelessWidget {
                   cusine.where((v) => v == j).length
               ? i
               : j);
-      totalMeals.removeWhere((e) => e == null);
-      totalRestaurants.removeWhere((e) => e == null);
     }
+
+    totalMeals.removeWhere((e) => e == null);
+    totalRestaurants.removeWhere((e) => e == null);
+    totalCountries.removeWhere((e) => e == null);
 
     return Column(
       children: [
@@ -114,7 +121,7 @@ class Profile extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(Icons.star),
               ),
-              Text("Restaurants rated: ${totalRestaurants.length}",
+              Text("Restaurants rated: ${totalRestaurants?.length ?? 0}",
                   style: TextStyle(fontSize: 20)),
             ])),
         Padding(
@@ -124,7 +131,17 @@ class Profile extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(Icons.local_dining),
               ),
-              Text("Meals rated: ${totalMeals.length}",
+              Text("Meals rated: ${totalMeals?.length ?? 0}",
+                  style: TextStyle(fontSize: 20)),
+            ])),
+        Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(Icons.location_on),
+              ),
+              Text("Countries visited: ${totalCountries?.length ?? 0}",
                   style: TextStyle(fontSize: 20)),
             ])),
         Padding(
