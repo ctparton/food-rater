@@ -64,4 +64,13 @@ class AuthService {
       return null;
     }
   }
+
+  /// Returns the [AppUser] that is currently signed in, else returns null
+  AppUser getSignedInUser() {
+    if (_auth.currentUser != null) {
+      return _userFromFirebase(_auth.currentUser);
+    } else {
+      return null;
+    }
+  }
 }

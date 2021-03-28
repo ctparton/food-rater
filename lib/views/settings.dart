@@ -56,14 +56,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onTap: () => displayAvatarSelection()),
             ),
             // Dark theme toggle
-            SwitchListTile(
-              value: themeProvider.isDarkMode,
-              onChanged: (value) {
-                final provider =
-                    Provider.of<ThemeProvider>(context, listen: false);
-                provider.switchTheme(value);
-              },
-              title: Text("Dark Theme"),
+            Card(
+              child: SwitchListTile(
+                value: themeProvider.isDarkMode,
+                onChanged: (value) {
+                  final provider =
+                      Provider.of<ThemeProvider>(context, listen: false);
+                  provider.switchTheme(value);
+                },
+                title: Text("Dark Theme"),
+              ),
             )
           ],
         ),

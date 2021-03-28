@@ -6,13 +6,14 @@ import 'package:provider/provider.dart';
 import 'package:food_rater/models/app_user_model.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:intl/intl.dart';
+import 'package:food_rater/services/auth.dart';
 
 /// A Profile class to show the user their current stats such as when they
 /// joined FoodMapr and their total ratings
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _user = Provider.of<AppUser>(context);
+    final AuthService _auth = AuthService();
     final _ratings = Provider.of<List<FoodRating>>(context);
 
     return Scaffold(
@@ -39,7 +40,9 @@ class Profile extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: _ratings != null
             ? Column(
-                children: [displayProfile(_user, context, _ratings)],
+                children: [
+                  displayProfile(_auth.getSignedInUser(), context, _ratings)
+                ],
               )
             : LoadingSpinner(animationType: AnimType.loading),
       ),
@@ -92,7 +95,10 @@ class Profile extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             "Hi ${user.displayName ?? ''}",
-            style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 60,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         SizedBox(
@@ -101,7 +107,8 @@ class Profile extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(children: [
-              Text("Stats", style: TextStyle(fontSize: 30)),
+              Text("Stats",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500)),
             ])),
         Padding(
             padding: const EdgeInsets.all(8.0),

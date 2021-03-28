@@ -95,7 +95,7 @@ class _RatingsState extends State<Ratings> {
             body: Container(
               child: SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: SearchBar<FoodRating>(
                     searchBarStyle: SearchBarStyle(
                       backgroundColor: Colors.grey[400],
@@ -125,7 +125,8 @@ class _RatingsState extends State<Ratings> {
                               ),
                               Text(
                                 "You have not made any ratings yet!",
-                                style: TextStyle(fontSize: 30),
+                                style: TextStyle(
+                                    fontSize: 30, color: Colors.white),
                               ),
                               SvgPicture.asset(
                                 "assets/035-recipebook.svg",
@@ -166,26 +167,37 @@ class _RatingsState extends State<Ratings> {
               ),
             );
           },
-          child: Column(children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Padding(padding: const EdgeInsets.only(top: 8.0, bottom: 8.0)),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(children: [
-                Text(
-                  rating.rName,
-                  style: TextStyle(fontSize: 30),
+                Expanded(
+                  flex: 6,
+                  child: Text(rating.rName,
+                      style: TextStyle(fontSize: 30),
+                      softWrap: false,
+                      overflow: TextOverflow.fade),
                 ),
                 Spacer()
               ]),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(children: [Text(rating.mealName), Spacer()]),
+              child: Row(children: [
+                Text(
+                  rating.mealName,
+                  style: TextStyle(fontWeight: FontWeight.w400),
+                ),
+                Spacer()
+              ]),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(children: [
-                Text(rating.rating.toString()),
+                Text(rating.rating.toString(),
+                    style: TextStyle(fontWeight: FontWeight.w600)),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ImageIcon(

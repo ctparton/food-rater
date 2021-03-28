@@ -64,13 +64,17 @@ class _RatingsDetailState extends State<RatingsDetail> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(widget.detail.mealName,
                       style: TextStyle(
-                          fontSize: 30.0, fontWeight: FontWeight.bold)),
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[700])),
                 ),
                 Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text("Consumed on: ${widget.detail.date}",
                         style: TextStyle(
-                            fontSize: 25.0, fontWeight: FontWeight.w300))),
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.grey[700]))),
                 // Spacer(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -93,11 +97,19 @@ class _RatingsDetailState extends State<RatingsDetail> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(children: [Text("Comments")]),
+                        child: Row(children: [
+                          Text("Comments",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20))
+                        ]),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(children: [Expanded(child: Text(comments))]),
+                        child: Row(children: [
+                          Expanded(
+                              child: Text(comments,
+                                  style: TextStyle(color: Colors.white)))
+                        ]),
                       )
                     ],
                   ),
@@ -108,7 +120,11 @@ class _RatingsDetailState extends State<RatingsDetail> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(children: [Text("Recipes")]),
+                        child: Row(children: [
+                          Text("Recipes",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20))
+                        ]),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -120,10 +136,17 @@ class _RatingsDetailState extends State<RatingsDetail> {
                             if (snapshot.hasData) {
                               return Column(children: [
                                 ListTile(
-                                  title: Text("Ingredients"),
-                                  subtitle: Text("Tap Icon to show"),
+                                  title: Text("Ingredients",
+                                      style: TextStyle(color: Colors.white)),
+                                  subtitle: Text("Tap Icon to show",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w300)),
                                   trailing: IconButton(
-                                    icon: Icon(Icons.remove_red_eye_rounded),
+                                    icon: Icon(
+                                      Icons.remove_red_eye_rounded,
+                                      color: Colors.white,
+                                    ),
                                     tooltip: 'Show Ingredients',
                                     onPressed: () {
                                       setState(() {
@@ -136,42 +159,74 @@ class _RatingsDetailState extends State<RatingsDetail> {
                                     ? DataTable(
                                         columns: [
                                             DataColumn(
-                                              label: Text(
-                                                'Ingredient',
-                                              ),
+                                              label: Text('Ingredient',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
                                             ),
                                             DataColumn(
-                                              label: Text(
-                                                'Amount',
-                                              ),
+                                              label: Text('Amount',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
                                             ),
                                           ],
                                         rows: snapshot
                                             .data.ingredientsRecipes.entries
                                             .map((entry) =>
                                                 DataRow(cells: <DataCell>[
-                                                  DataCell(Text(entry.key)),
-                                                  DataCell(Text(entry.value))
+                                                  DataCell(Text(entry.key,
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.white))),
+                                                  DataCell(Text(entry.value,
+                                                      style: TextStyle(
+                                                          color: Colors.white)))
                                                 ]))
                                             .toList())
                                     : Text(" "),
                                 Column(children: [
                                   ListTile(
-                                    title: Text("Method"),
-                                    subtitle: Text(
-                                        '${snapshot.data.strInstructions}'),
+                                    title: Text("Method",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold)),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0.0, 8.0, 0.0, 0.0),
+                                      child: Text(
+                                          '${snapshot.data.strInstructions}',
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ),
                                   ),
                                   ListTile(
-                                    title: Text("Recipe Source"),
+                                    title: Text("Recipe Source",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold)),
                                     subtitle: InkWell(
-                                        child: Text(snapshot.data.strSource),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0.0, 8.0, 0.0, 0.0),
+                                          child: Text(snapshot.data.strSource,
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                        ),
                                         onTap: () =>
                                             launch(snapshot.data.strSource)),
                                   ),
                                   ListTile(
-                                    title: Text("Video "),
+                                    title: Text("Video ",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold)),
                                     subtitle: InkWell(
-                                        child: Text(snapshot.data.strYoutube),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0.0, 8.0, 0.0, 0.0),
+                                          child: Text(snapshot.data.strYoutube,
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                        ),
                                         onTap: () =>
                                             launch(snapshot.data.strYoutube)),
                                   ),
@@ -179,14 +234,16 @@ class _RatingsDetailState extends State<RatingsDetail> {
                               ]);
                             } else if (snapshot.hasError) {
                               return ListTile(
-                                title:
-                                    Text("Cannot fetch recipe for this meal!"),
+                                title: Text(
+                                    "Cannot fetch recipe for this meal!",
+                                    style: TextStyle(color: Colors.white)),
                               );
                             } else {
                               if (snapshot.data == null) {
                                 return ListTile(
                                   title: Text(
-                                      "Cannot fetch recipe for this meal!"),
+                                      "Cannot fetch recipe for this meal!",
+                                      style: TextStyle(color: Colors.white)),
                                 );
                               }
                               return ListTile(
