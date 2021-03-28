@@ -17,6 +17,7 @@ class Ratings extends StatefulWidget {
 }
 
 class _RatingsState extends State<Ratings> {
+  /// Controls the state of the search bar
   final SearchBarController<FoodRating> _searchBarController =
       SearchBarController();
 
@@ -24,12 +25,13 @@ class _RatingsState extends State<Ratings> {
   @override
   Widget build(BuildContext context) {
     final _ratings = Provider.of<List<FoodRating>>(context);
+    // By default, sort ratings in descending order
     if (_ratings != null && sortedDescending) {
       _ratings.sort((a, b) => b.rating.compareTo(a.rating));
     }
 
-    /// Returns the filtered _ratings list based on [search]
-    Future<List<FoodRating>> search(String search) async {
+    /// Returns the filtered _ratings list based on the [search] query
+    Future<List<FoodRating>> handleSearchQuery(String search) async {
       return search == "empty"
           ? _ratings
           : _ratings
@@ -58,6 +60,7 @@ class _RatingsState extends State<Ratings> {
                         },
                       )
                     : Transform.rotate(
+                        // If sorted in ascending order, flip the icon
                         angle: 180 * math.pi / 180,
                         child: IconButton(
                           icon: Icon(
@@ -131,7 +134,7 @@ class _RatingsState extends State<Ratings> {
                               )
                             ],
                           ),
-                    onSearch: search,
+                    onSearch: handleSearchQuery,
                     onItemFound: (FoodRating rating, int index) {
                       return buildRatingCard(rating);
                     },
@@ -143,7 +146,8 @@ class _RatingsState extends State<Ratings> {
         : LoadingSpinner(animationType: AnimType.loading);
   }
 
-  /// Creates an individual ratings card
+  /// Creates an individual ratings card, consisting of the restaruant name,
+  /// meal and rating
   Widget buildRatingCard(FoodRating rating) {
     return Container(
         child: Padding(

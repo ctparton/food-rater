@@ -4,6 +4,7 @@ class AppUser {
   final String uid;
   final DateTime created;
   final String displayName;
+  final String photoURL;
 
-  AppUser({this.uid, this.created, this.displayName});
+  AppUser({this.uid, this.created, this.displayName, this.photoURL});
 }

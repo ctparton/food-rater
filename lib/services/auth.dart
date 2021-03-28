@@ -15,7 +15,8 @@ class AuthService {
         ? AppUser(
             uid: user.uid,
             created: user.metadata.creationTime,
-            displayName: user.displayName)
+            displayName: user.displayName,
+            photoURL: user.photoURL)
         : null;
   }
 
@@ -53,5 +54,14 @@ class AuthService {
   /// Signs the user out, if successful the [AuthStateChanges] is modified
   Future signOut() async {
     return await _auth.signOut();
+  }
+
+  /// Updates the profile icon of the user as shown on the profile screen
+  Future updateAvatar(String avatarIcon) async {
+    try {
+      await _auth.currentUser.updateProfile(photoURL: avatarIcon);
+    } catch (e) {
+      return null;
+    }
   }
 }

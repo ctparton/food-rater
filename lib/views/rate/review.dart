@@ -76,6 +76,7 @@ class _ReviewState extends State<Review> {
     }
   }
 
+  /// Sets the meal name to current value and clears the places Autocomplete
   _onMealNameChange(value) {
     _mealName = value;
     _placeList = [];

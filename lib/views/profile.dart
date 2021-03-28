@@ -74,8 +74,9 @@ class Profile extends StatelessWidget {
         SizedBox(height: MediaQuery.of(context).size.height * 0.10),
         CircleAvatar(
           child: CircleAvatar(
-            backgroundImage:
-                AssetImage("assets/icons8-user-male-skin-type-7-96.png"),
+            backgroundImage: user.photoURL != null
+                ? AssetImage("assets/${user.photoURL}")
+                : AssetImage("assets/icons8-user-male-skin-type-1-48.png"),
             radius: 30,
           ),
           radius: 50,
