@@ -67,15 +67,21 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/043-ramen.svg
-    - assets/008-catering.svg
     - assets/heart_border.png
     - assets/heart_half.png
     - assets/heart.png
     - assets/035-recipebook.svg
-    - assets/trail-loading.json
-    - assets/food_carousel_edited.json
     - assets/map_style_dark.json
-    - assets/icons8-user-male-skin-type-7-96.png
+    - assets/icons8-user-female-skin-type-1-48.png
+    - assets/icons8-user-female-skin-type-2-48.png
+    - assets/icons8-user-female-skin-type-3-48.png
+    - assets/icons8-user-female-skin-type-4-48.png
+    - assets/icons8-user-female-skin-type-5-48.png
+    - assets/icons8-user-male-skin-type-1-48.png
+    - assets/icons8-user-male-skin-type-2-48.png
+    - assets/icons8-user-male-skin-type-3-48.png
+    - assets/icons8-user-male-skin-type-4-48.png
+    - assets/icons8-user-male-skin-type-5-48.png
     - assets/loading.json
     - assets/food_loading.json
     - .env
