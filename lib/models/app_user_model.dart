@@ -1,5 +1,5 @@
-/// This class creates an AppUser object, from the [User] response following a
-/// Firebase Auth request
+/// This modeal class creates an AppUser object, from the [User] response
+/// following a successful Firebase Auth request
 class AppUser {
   final String uid;
   final DateTime created;

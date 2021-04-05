@@ -20,7 +20,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentPage = 0;
 
-  final page = [Ratings(), MapState(), Review(), Profile()];
+  final pages = [Ratings(), MapState(), Review(), Profile()];
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class _HomeState extends State<Home> {
             );
           },
           // The Indexed Stack ensures the state of each tab is retained
-          child: IndexedStack(index: _currentPage, children: page),
+          child: IndexedStack(index: _currentPage, children: pages),
         ),
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: Colors.blue[800],

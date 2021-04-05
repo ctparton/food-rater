@@ -8,7 +8,7 @@ class ThemeProvider extends ChangeNotifier {
 
   void switchTheme(bool isOn) {
     themeMode = isOn ? ThemeMode.dark : ThemeMode.light;
-    // Updates descendent widgets
+    // Updates descendent widgets with the selected theme if switched
     notifyListeners();
   }
 }

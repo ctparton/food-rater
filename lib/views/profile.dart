@@ -65,6 +65,7 @@ class Profile extends StatelessWidget {
             ? e.rLocation.split(",").removeLast().toLowerCase().trim()
             : null)
         .toSet();
+
     if (!ratings.isEmpty) {
       List cusine = ratings.map((e) => e.cuisine).toList();
       // Gets the most popular type of cuisine in the users ratings

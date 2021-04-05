@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-/// A class which builds the Map view tab
+/// A class which builds the Map view tab with a horizontal scrolling list of
+/// the reviews that the user has made.
 class MapState extends StatefulWidget {
   @override
   _MapStateState createState() => _MapStateState();
@@ -36,6 +37,7 @@ class _MapStateState extends State<MapState> {
       }
     }
 
+    // build stack with the ratings on top of the Google map
     return _ratings != null
         ? Stack(children: [
             GoogleMap(
@@ -57,6 +59,7 @@ class _MapStateState extends State<MapState> {
             ),
             Container(
               alignment: Alignment.bottomCenter,
+              // list takes up bottom 20% of the screen
               padding: EdgeInsets.fromLTRB(
                   0, MediaQuery.of(context).size.height * 0.80, 0, 32),
               child: ListView.builder(
@@ -81,6 +84,7 @@ class _MapStateState extends State<MapState> {
                                 '${_ratings[index].mealName} on ${_ratings[index].date}',
                                 style: TextStyle(color: Colors.white)),
                             onTap: () {
+                              // If rating tapped, move Google map to this rating
                               mapController.animateCamera(
                                   CameraUpdate.newCameraPosition(CameraPosition(
                                       target: LatLng(_ratings[index].latitude,

@@ -9,7 +9,8 @@ import 'package:food_rater/services/firestore_service.dart';
 import 'package:food_rater/models/recipe_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// A class which creates the Ratings Detail Page
+/// A class which creates the Ratings Detail Page to display the details of a
+/// particular rating
 class RatingsDetail extends StatefulWidget {
   final FoodRating detail;
 
@@ -42,6 +43,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
     return Scaffold(
       body: Center(
         child: CustomScrollView(
+          // Build app bar with large image that is gradually hidden upon scroll
           slivers: <Widget>[
             SliverAppBar(
               title: Text(widget.detail.rName),
@@ -75,7 +77,6 @@ class _RatingsDetailState extends State<RatingsDetail> {
                             fontSize: 25.0,
                             fontWeight: FontWeight.w300,
                             color: Colors.grey[700]))),
-                // Spacer(),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RatingBar(
@@ -232,12 +233,14 @@ class _RatingsDetailState extends State<RatingsDetail> {
                                   ),
                                 ]),
                               ]);
+                              // If there is an error with the request
                             } else if (snapshot.hasError) {
                               return ListTile(
                                 title: Text(
                                     "Cannot fetch recipe for this meal!",
                                     style: TextStyle(color: Colors.white)),
                               );
+                              // If there is not a meal found
                             } else {
                               if (snapshot.data == null) {
                                 return ListTile(
@@ -264,7 +267,8 @@ class _RatingsDetailState extends State<RatingsDetail> {
     );
   }
 
-  /// Shows modal window for editing a particular rating
+  /// Shows modal window for editing a particular rating with ratings and
+  /// comments options
   _ratingEditBottomModal(BuildContext context, AppUser user) {
     FirestoreServce firestoreServce = FirestoreServce(uid: user.uid);
     showModalBottomSheet(
@@ -277,6 +281,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
             builder: (BuildContext context) {
               double _rating;
               String _comments;
+              // stateful builder allows state local to the modal
               return StatefulBuilder(
                 builder: (BuildContext context, setStateModal) => Container(
                   margin: EdgeInsets.all(30.0),
@@ -339,6 +344,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
                         width: double.infinity,
                         child: RaisedButton(
                           onPressed: () async {
+                            // Change the values under the modal if they have been updated
                             widget.detail.rating =
                                 _rating ?? widget.detail.rating;
                             widget.detail.comments =

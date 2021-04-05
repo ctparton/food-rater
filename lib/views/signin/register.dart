@@ -10,6 +10,7 @@ class Register extends StatefulWidget {
   _RegisterState createState() => _RegisterState();
 }
 
+/// Holds the state of the registration information the user is currently typing in
 class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormBuilderState>();
@@ -115,6 +116,7 @@ class _RegisterState extends State<Register> {
                           ),
                           onPressed: () async {
                             _formKey.currentState.save();
+                            // if form data is valid, make sign in call
                             if (_formKey.currentState.validate()) {
                               setState(() => isLoading = true);
                               dynamic result = await _auth.registerUser(

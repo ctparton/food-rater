@@ -4,7 +4,7 @@ import 'package:food_rater/models/app_user_model.dart';
 /// Service class to handle all interactions with Firebase Authentication
 ///
 /// Handles Sign In, Sign Out, Regrestration and Decoding of the raw [User]
-/// response from Firebase Auth
+/// response from Firebase Auth into an [AppUser] model
 class AuthService {
   /// Instance of Firebase Authentication
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -26,8 +26,8 @@ class AuthService {
     return _auth.authStateChanges().map((User u) => _userFromFirebase(u));
   }
 
-  /// Returns the signed in [AppUser] if sign in is successful, otherwise
-  /// null is returned
+  /// Returns the signed in [AppUser] if sign in is successful with the supplied
+  /// [email] and [password], otherwise null is returned
   Future signIn(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
@@ -39,7 +39,7 @@ class AuthService {
   }
 
   /// Registers a user with a [username], [email] and [password] and returns an
-  /// [AppUser] if registration is successful, otherwise returns null
+  /// [AppUser] if registration is successful, otherwise null is returned
   Future registerUser(String username, String email, String password) async {
     try {
       await _auth.createUserWithEmailAndPassword(
@@ -51,7 +51,8 @@ class AuthService {
     }
   }
 
-  /// Signs the user out, if successful the [AuthStateChanges] is modified
+  /// Signs the user out, if successful the [AuthStateChanges] value is modified,
+  /// which modifies the [AppUser] stream in turn
   Future signOut() async {
     return await _auth.signOut();
   }

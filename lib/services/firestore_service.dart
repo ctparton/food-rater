@@ -111,6 +111,7 @@ class FirestoreServce {
       String rLocation, String placeID) async {
     var locationMap = new Map<String, double>();
     if (placeID != null) {
+      // If we have a google places ID
       final geocoding = new GoogleMapsGeocoding(apiKey: env['G_KEY']);
       GeocodingResponse response = await geocoding.searchByPlaceId(placeID);
       if (response.isOkay) {
@@ -155,8 +156,8 @@ class FirestoreServce {
         .toList();
   }
 
-  /// Returns a stream of [FoodRating] if any new changes to the ratings
-  /// collection are made
+  /// Returns a stream of [FoodRating] if any new changes (e.g. CRUD operations)
+  /// to the ratings collection are made
   Stream<List<FoodRating>> get ratings {
     var ref = userCollection.doc(uid).collection("ratings");
     return ref.snapshots().map(_foodRatingFromSnapshot);

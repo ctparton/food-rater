@@ -4,7 +4,7 @@ import 'package:food_rater/views/common/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-// A class to show the settigns page of the application
+// A class to show the settings page of the application
 class SettingsScreen extends StatefulWidget {
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
@@ -73,6 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  /// Creates the different avatar options that the user can select
   List<FormBuilderFieldOption<dynamic>> createFormOptions() {
     List<FormBuilderFieldOption<dynamic>> options = [];
 
@@ -94,6 +95,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return options;
   }
 
+  /// Displays the dialog with the avatar selection
   Future<void> displayAvatarSelection() async {
     return await showDialog<void>(
         context: context,

@@ -15,7 +15,7 @@ void main() async {
 }
 
 /// Application root which provides the current user and the theme to the
-/// descendent widgets
+/// descendent widgets (e.g. all other screens)
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

@@ -11,6 +11,7 @@ class SignIn extends StatefulWidget {
   _SignInState createState() => _SignInState();
 }
 
+/// Holds the information that the user is trying to authenticate with
 class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormBuilderState>();
@@ -87,6 +88,7 @@ class _SignInState extends State<SignIn> {
                               ),
                               onPressed: () async {
                                 _formKey.currentState.save();
+                                // if form data is valid, make sign in call
                                 if (_formKey.currentState.validate()) {
                                   setState(() => isLoading = true);
                                   dynamic result =

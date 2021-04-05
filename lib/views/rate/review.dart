@@ -226,6 +226,7 @@ class _ReviewState extends State<Review> {
                         child: RaisedButton(
                           onPressed: () async {
                             _formKey.currentState.save();
+                            // if form passes validation checks, attempt upload
                             if (_formKey.currentState.validate()) {
                               setState(() => isLoading = true);
                               _rLocation = _rName;

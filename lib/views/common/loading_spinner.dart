@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 /// Provides re-usable loading widgets to the app with various [animationType]
+/// This includes animations upon sign-in and when creating a rating
 class LoadingSpinner extends StatefulWidget {
   final AnimType animationType;
 
@@ -32,6 +33,7 @@ class _LoadingSpinnerState extends State<LoadingSpinner> {
         throw Exception("Could not find enum");
         break;
     }
+    // gets the light or dark theme that the app is currently using
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Container(
         color: themeProvider.isDarkMode ? Colors.grey.shade900 : Colors.white,
