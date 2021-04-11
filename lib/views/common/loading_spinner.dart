@@ -36,7 +36,10 @@ class _LoadingSpinnerState extends State<LoadingSpinner> {
     // gets the light or dark theme that the app is currently using
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Container(
-        color: themeProvider.isDarkMode ? Colors.grey.shade900 : Colors.white,
-        child: Center(child: Lottie.asset(lottieFile)));
+      color: themeProvider.isDarkMode ? Colors.grey.shade900 : Colors.white,
+      child: Center(
+        child: Lottie.asset(lottieFile),
+      ),
+    );
   }
 }

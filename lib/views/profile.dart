@@ -13,13 +13,16 @@ import 'package:food_rater/services/auth.dart';
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    /// Auth service to retrieve current user statistics
     final AuthService _auth = AuthService();
+
+    /// Collection of ratings that the user has made
     final _ratings = Provider.of<List<FoodRating>>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: Text("FoodMapr"),
-        actions: <Widget>[
+        actions: [
           IconButton(
             icon: Icon(
               Icons.settings,
@@ -37,7 +40,9 @@ class Profile extends StatelessWidget {
         ],
       ),
       body: Container(
+        // full device width
         width: MediaQuery.of(context).size.width,
+        // Once ratings have been loaded, display the profile
         child: _ratings != null
             ? Column(
                 children: [
@@ -49,9 +54,11 @@ class Profile extends StatelessWidget {
     );
   }
 
-  /// Displays the actual profile of the user as well as their stats
+  /// Displays the profile of the user as well as the total meals/restaurants they have rated,
+  /// the type of cuisine they have most frequently rated and the total countries visited
   Widget displayProfile(AppUser user, context, ratings) {
     dynamic mostPopular;
+
     dynamic totalMeals = ratings
         .map((e) => e.mealName != null ? e.mealName.toLowerCase().trim() : null)
         .toSet();
@@ -61,6 +68,7 @@ class Profile extends StatelessWidget {
         .toSet();
 
     dynamic totalCountries = ratings
+        // get the country from location string in form e.g. town, city, country
         .map((e) => e.rLocation.split(",").removeLast() != null
             ? e.rLocation.split(",").removeLast().toLowerCase().trim()
             : null)
@@ -106,65 +114,71 @@ class Profile extends StatelessWidget {
           height: 20,
         ),
         Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(children: [
-              Text("Stats",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500)),
-            ])),
+          padding: const EdgeInsets.all(12.0),
+          child: Row(children: [
+            Text("Stats",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500)),
+          ]),
+        ),
         Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.date_range),
-              ),
-              Text(
-                  "You joined FoodMapr on: ${DateFormat('dd-MM-yyyy').format(user.created).toString()}",
-                  style: TextStyle(fontSize: 20)),
-            ])),
+          padding: const EdgeInsets.all(8.0),
+          child: Row(children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.date_range),
+            ),
+            Text(
+                "You joined FoodMapr on: ${DateFormat('dd-MM-yyyy').format(user.created).toString()}",
+                style: TextStyle(fontSize: 20)),
+          ]),
+        ),
         Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.star),
-              ),
-              Text("Restaurants rated: ${totalRestaurants?.length ?? 0}",
-                  style: TextStyle(fontSize: 20)),
-            ])),
+          padding: const EdgeInsets.all(8.0),
+          child: Row(children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.star),
+            ),
+            Text("Restaurants rated: ${totalRestaurants?.length ?? 0}",
+                style: TextStyle(fontSize: 20)),
+          ]),
+        ),
         Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.local_dining),
-              ),
-              Text("Meals rated: ${totalMeals?.length ?? 0}",
-                  style: TextStyle(fontSize: 20)),
-            ])),
+          padding: const EdgeInsets.all(8.0),
+          child: Row(children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.local_dining),
+            ),
+            Text("Meals rated: ${totalMeals?.length ?? 0}",
+                style: TextStyle(fontSize: 20)),
+          ]),
+        ),
         Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.location_on),
-              ),
-              Text("Countries visited: ${totalCountries?.length ?? 0}",
-                  style: TextStyle(fontSize: 20)),
-            ])),
+          padding: const EdgeInsets.all(8.0),
+          child: Row(children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.location_on),
+            ),
+            Text("Countries visited: ${totalCountries?.length ?? 0}",
+                style: TextStyle(fontSize: 20)),
+          ]),
+        ),
         Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.food_bank_sharp),
-              ),
-              mostPopular != null
-                  ? Text("Most rated cuisine: $mostPopular",
-                      style: TextStyle(fontSize: 20))
-                  : Text("You do not have a most rated cuisine yet",
-                      style: TextStyle(fontSize: 20)),
-            ])),
+          padding: const EdgeInsets.all(8.0),
+          child: Row(children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.food_bank_sharp),
+            ),
+            mostPopular != null
+                ? Text("Most rated cuisine: $mostPopular",
+                    style: TextStyle(fontSize: 20))
+                : Text("You do not have a most rated cuisine yet",
+                    style: TextStyle(fontSize: 20)),
+          ]),
+        ),
       ],
     );
   }

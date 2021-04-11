@@ -4,7 +4,7 @@ import 'package:food_rater/models/recipe_model.dart';
 
 /// Service class to handle all requests to the MealDB API
 ///
-///source: https://www.themealdb.com/api.php
+/// source: https://www.themealdb.com/api.php
 class RecipeService {
   final String BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
 

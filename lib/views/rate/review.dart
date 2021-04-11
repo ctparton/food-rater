@@ -21,9 +21,15 @@ class Review extends StatefulWidget {
   _ReviewState createState() => _ReviewState();
 }
 
+/// A class to hold the state of the form and handle submission actions
 class _ReviewState extends State<Review> {
+  /// Recipe service instance to get the cuisine on submission
   final RecipeService recipeService = RecipeService();
+
+  /// Key to hold the current state of the form
   final _formKey = GlobalKey<FormBuilderState>();
+
+  // Form state holders
   String errorMessage = "";
   String _placeID;
   var uuid = new Uuid();
@@ -58,7 +64,7 @@ class _ReviewState extends State<Review> {
     });
   }
 
-  /// If the value of the restaurant name field changes call the Google Places
+  /// If the [value] of the restaurant name field changes call the Google Places
   /// Autocomplete API
   _onRestaurantNameChange(value) {
     setState(() => _rName = value);
@@ -71,6 +77,7 @@ class _ReviewState extends State<Review> {
       });
     }
 
+    // get suggestions for current session
     if (!newSession) {
       getSuggestion(value);
     }
@@ -99,224 +106,242 @@ class _ReviewState extends State<Review> {
   Widget build(BuildContext context) {
     final _user = Provider.of<AppUser>(context);
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text("FoodMapr"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.settings,
-                color: Colors.white,
-              ),
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SettingsScreen(),
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text("FoodMapr"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(),
+                ),
+              );
+            },
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        physics: ScrollPhysics(),
+        child: Container(
+          margin: EdgeInsets.all(30.0),
+          child: FormBuilder(
+            key: _formKey,
+            child: Column(children: [
+              FormBuilderTextField(
+                  autofocus: false,
+                  name: "rName",
+                  validator: FormBuilderValidators.required(context),
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.place),
+                    labelText: 'Restaurant Name *',
                   ),
-                );
-              },
-            )
-          ],
+                  onChanged: (value) => _onRestaurantNameChange(value)),
+              // UI placeholder for the autocomplete suggestions
+              placeResultList(),
+              FormBuilderTextField(
+                  autofocus: false,
+                  name: "mealName",
+                  validator: FormBuilderValidators.required(context),
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.set_meal),
+                    labelText: 'Meal Name *',
+                  ),
+                  onChanged: (value) => _onMealNameChange(value)),
+              // Date picker
+              FormBuilderDateTimePicker(
+                autofocus: false,
+                name: 'date',
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(context),
+                ]),
+                inputType: InputType.date,
+                decoration: InputDecoration(
+                    labelText: 'Consumed On', icon: Icon(Icons.date_range)),
+                onChanged: (value) => setState(() => _date = value),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  child: Text(
+                    "Rating",
+                  ),
+                ),
+              ),
+              // Custom form field to hold the rating slider
+              FormBuilderField(
+                name: "rating",
+                builder: (FormFieldState<dynamic> field) {
+                  return InputDecorator(
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      errorText: field.errorText,
+                    ),
+                    child: RatingBar.builder(
+                        initialRating: 0,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        allowHalfRating: false,
+                        itemCount: 5,
+                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                        onRatingUpdate: (value) =>
+                            setState(() => _rating = value)),
+                  );
+                },
+              ),
+              // Camera upload form
+              FormBuilderImagePicker(
+                name: 'photos',
+                // compress photos for saving on server
+                imageQuality: 60,
+                iconColor: Colors.blue,
+                onChanged: (value) {
+                  if (value.isNotEmpty) {
+                    setState(() {
+                      _image = value.first;
+                    });
+                  } else {
+                    setState(() {
+                      _image = null;
+                    });
+                  }
+                },
+                decoration: const InputDecoration(labelText: 'Pick Photos'),
+                maxImages: 1,
+              ),
+              const SizedBox(height: 15),
+              FormBuilderTextField(
+                decoration: const InputDecoration(
+                    labelText: 'Comments', icon: Icon(Icons.comment)),
+                name: "comments",
+                onChanged: (value) => setState(() => _comments = value),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () async {
+                    _formKey.currentState.save();
+                    // if form passes validation checks, attempt upload
+                    if (_formKey.currentState.validate()) {
+                      setState(() => isLoading = true);
+                      _rLocation = _rName;
+                      // Get the name of the restaurant from the address
+                      _rName = _rName.split(",")[0];
+
+                      FirestoreServce firestoreServce =
+                          FirestoreServce(uid: _user.uid);
+                      try {
+                        String cuisine;
+                        try {
+                          cuisine = await recipeService.getCuisine(_mealName);
+                        } catch (err) {
+                          cuisine = null;
+                        }
+
+                        // Upload the rating
+                        await firestoreServce.addRating(
+                          _rName,
+                          _rLocation,
+                          _placeID,
+                          _mealName,
+                          DateFormat('dd-MM-yyyy').format(_date),
+                          _rating,
+                          _image,
+                          _comments,
+                          cuisine,
+                        );
+                        setState(() {
+                          isLoading = false;
+                          resetForm();
+                        });
+                        Scaffold.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Rating submitted'),
+                            action: SnackBarAction(
+                              label: 'View',
+                              onPressed: () {},
+                            ),
+                          ),
+                        );
+                        // Catch and display error
+                      } catch (err) {
+                        setState(() {
+                          isLoading = false;
+                          errorMessage =
+                              "An error has occured making the rating";
+                        });
+                      }
+                    }
+                  },
+                  child: Text(
+                    "Rate!",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              // loading or error after rating submission
+              isLoading
+                  ? Container(
+                      width: 300,
+                      height: 300,
+                      margin: EdgeInsets.all(40),
+                      padding: EdgeInsets.only(bottom: 24),
+                      alignment: Alignment.center,
+                      child: LoadingSpinner(animationType: AnimType.rating),
+                    )
+                  : Text(
+                      errorMessage,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.red),
+                    )
+            ]),
+          ),
         ),
-        body: SingleChildScrollView(
-            physics: ScrollPhysics(),
-            child: Container(
-                margin: EdgeInsets.all(30.0),
-                child: FormBuilder(
-                    key: _formKey,
-                    child: Column(children: [
-                      FormBuilderTextField(
-                          autofocus: false,
-                          name: "rName",
-                          validator: FormBuilderValidators.required(context),
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.place),
-                            labelText: 'Restaurant Name *',
-                          ),
-                          onChanged: (value) => _onRestaurantNameChange(value)),
-                      placeResultList(),
-                      FormBuilderTextField(
-                          autofocus: false,
-                          name: "mealName",
-                          validator: FormBuilderValidators.required(context),
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.set_meal),
-                            labelText: 'Meal Name *',
-                          ),
-                          onChanged: (value) => _onMealNameChange(value)),
-                      FormBuilderDateTimePicker(
-                        autofocus: false,
-                        name: 'date',
-                        validator: FormBuilderValidators.compose([
-                          FormBuilderValidators.required(context),
-                        ]),
-                        inputType: InputType.date,
-                        decoration: InputDecoration(
-                            labelText: 'Consumed On',
-                            icon: Icon(Icons.date_range)),
-                        onChanged: (value) => setState(() => _date = value),
-                      ),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            child: Text(
-                              "Rating",
-                            ),
-                          )),
-                      FormBuilderField(
-                        name: "rating",
-                        builder: (FormFieldState<dynamic> field) {
-                          return InputDecorator(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              errorText: field.errorText,
-                            ),
-                            child: RatingBar.builder(
-                                initialRating: 0,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                allowHalfRating: false,
-                                itemCount: 5,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: 4.0),
-                                itemBuilder: (context, _) => Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                    ),
-                                onRatingUpdate: (value) =>
-                                    setState(() => _rating = value)),
-                          );
-                        },
-                      ),
-                      FormBuilderImagePicker(
-                        name: 'photos',
-                        imageQuality: 60,
-                        iconColor: Colors.blue,
-                        onChanged: (value) {
-                          if (value.isNotEmpty) {
-                            setState(() {
-                              _image = value.first;
-                            });
-                          } else {
-                            setState(() {
-                              _image = null;
-                            });
-                          }
-                        },
-                        decoration:
-                            const InputDecoration(labelText: 'Pick Photos'),
-                        maxImages: 1,
-                      ),
-                      const SizedBox(height: 15),
-                      FormBuilderTextField(
-                        decoration: const InputDecoration(
-                            labelText: 'Comments', icon: Icon(Icons.comment)),
-                        name: "comments",
-                        onChanged: (value) => setState(() => _comments = value),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: RaisedButton(
-                          onPressed: () async {
-                            _formKey.currentState.save();
-                            // if form passes validation checks, attempt upload
-                            if (_formKey.currentState.validate()) {
-                              setState(() => isLoading = true);
-                              _rLocation = _rName;
-                              // Get the name of the restaurant from the address
-                              _rName = _rName.split(",")[0];
-
-                              FirestoreServce firestoreServce =
-                                  FirestoreServce(uid: _user.uid);
-                              try {
-                                String cuisine;
-                                try {
-                                  cuisine =
-                                      await recipeService.getCuisine(_mealName);
-                                } catch (err) {
-                                  cuisine = null;
-                                }
-
-                                await firestoreServce.addRating(
-                                  _rName,
-                                  _rLocation,
-                                  _placeID,
-                                  _mealName,
-                                  DateFormat('dd-MM-yyyy').format(_date),
-                                  _rating,
-                                  _image,
-                                  _comments,
-                                  cuisine,
-                                );
-                                setState(() {
-                                  isLoading = false;
-                                  resetForm();
-                                });
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text('Rating submitted'),
-                                  action: SnackBarAction(
-                                    label: 'View',
-                                    onPressed: () {},
-                                  ),
-                                ));
-                              } catch (err) {
-                                setState(() {
-                                  isLoading = false;
-                                  errorMessage =
-                                      "An error has occured making the rating";
-                                });
-                              }
-                            }
-                          },
-                          child: Text("Rate!",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white)),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      isLoading
-                          ? Container(
-                              width: 300,
-                              height: 300,
-                              margin: EdgeInsets.all(40),
-                              padding: EdgeInsets.only(bottom: 24),
-                              alignment: Alignment.center,
-                              child: LoadingSpinner(
-                                  animationType: AnimType.rating))
-                          : Text(errorMessage,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red))
-                    ])))));
+      ),
+    );
   }
 
   /// Builds a tile for each returned prediction from the Google Places API
   Widget placeResultList() {
     return Container(
       child: ListView.builder(
+        // cannot scroll the suggestions
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: _placeList.length,
         itemBuilder: (context, index) {
           return ListTile(
+            // description is in the form placeName, city, country
             title: Text(_placeList[index]["description"]),
             onTap: () {
               dynamic place = _placeList[index];
               setState(() {
+                // clear suggestions once an item has been tapped
                 _placeList = [];
                 _sessionToken = null;
+                // get the placeID for future calls
                 _placeID = place['place_id'];
               });
+              // programatically override the restaurant name field with the current description
               _formKey.currentState.fields['rName']
                   .didChange(place["description"]);
             },

@@ -16,19 +16,21 @@ class ThemeProvider extends ChangeNotifier {
 /// The light and dark theme definitions for the app
 class CustomThemes {
   static final darkTheme = ThemeData(
-      accentColor: Colors.green[400],
-      buttonTheme: ButtonThemeData(
-          buttonColor: Colors.blue[400],
-          padding: EdgeInsets.all(8.0),
-          splashColor: Colors.green),
-      scaffoldBackgroundColor: Colors.grey.shade900,
-      colorScheme: ColorScheme.dark());
+    accentColor: Colors.green[400],
+    buttonTheme: ButtonThemeData(
+        buttonColor: Colors.blue[400],
+        padding: EdgeInsets.all(8.0),
+        splashColor: Colors.green),
+    scaffoldBackgroundColor: Colors.grey.shade900,
+    colorScheme: ColorScheme.dark(),
+  );
 
   static final lightTheme = ThemeData(
-      scaffoldBackgroundColor: Colors.white,
-      colorScheme: ColorScheme.light(),
-      buttonTheme: ButtonThemeData(
-          buttonColor: Colors.blue[400],
-          padding: EdgeInsets.all(8.0),
-          splashColor: Colors.green));
+    scaffoldBackgroundColor: Colors.white,
+    colorScheme: ColorScheme.light(),
+    buttonTheme: ButtonThemeData(
+        buttonColor: Colors.blue[400],
+        padding: EdgeInsets.all(8.0),
+        splashColor: Colors.green),
+  );
 }

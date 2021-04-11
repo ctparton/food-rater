@@ -21,7 +21,10 @@ class RatingsDetail extends StatefulWidget {
 
 /// A class to hold the state of the page and display the information
 class _RatingsDetailState extends State<RatingsDetail> {
+  /// Recipe service instance to get recipe information
   final RecipeService recipeService = RecipeService();
+
+  /// Key to hold the current state of the form
   final _formKey = GlobalKey<FormBuilderState>();
   Future<Recipe> recipeRes;
   bool showIngredients = false;
@@ -53,44 +56,58 @@ class _RatingsDetailState extends State<RatingsDetail> {
               ),
               actions: [
                 IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () => _ratingEditBottomModal(context, _user)),
+                  icon: Icon(Icons.edit),
+                  onPressed: () => _ratingEditBottomModal(context, _user),
+                ),
                 IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => _ratingDeleteBottomModal(context, _user))
+                  icon: Icon(Icons.delete),
+                  onPressed: () => _ratingDeleteBottomModal(context, _user),
+                )
               ],
             ),
             SliverList(
               delegate: SliverChildListDelegate([
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(widget.detail.mealName,
-                      style: TextStyle(
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[700])),
+                  child: Text(
+                    widget.detail.mealName,
+                    style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[700]),
+                  ),
                 ),
                 Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Consumed on: ${widget.detail.date}",
-                        style: TextStyle(
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.w300,
-                            color: Colors.grey[700]))),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Consumed on: ${widget.detail.date}",
+                    style: TextStyle(
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.grey[700]),
+                  ),
+                ),
+                // Build read-only rating bar
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RatingBar(
-                      glow: false,
-                      initialRating: rating,
-                      ignoreGestures: true,
-                      onRatingUpdate: (value) => null,
-                      ratingWidget: RatingWidget(
-                        full: Image(image: AssetImage('assets/heart.png')),
-                        half: Image(image: AssetImage('assets/heart_half.png')),
-                        empty:
-                            Image(image: AssetImage('assets/heart_border.png')),
+                    glow: false,
+                    initialRating: rating,
+                    ignoreGestures: true,
+                    onRatingUpdate: (value) => null,
+                    ratingWidget: RatingWidget(
+                      full: Image(
+                        image: AssetImage('assets/heart.png'),
                       ),
-                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0)),
+                      half: Image(
+                        image: AssetImage('assets/heart_half.png'),
+                      ),
+                      empty: Image(
+                        image: AssetImage('assets/heart_border.png'),
+                      ),
+                    ),
+                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                  ),
                 ),
                 Card(
                   color: Colors.green,
@@ -99,17 +116,21 @@ class _RatingsDetailState extends State<RatingsDetail> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(children: [
-                          Text("Comments",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20))
+                          Text(
+                            "Comments",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          )
                         ]),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(children: [
                           Expanded(
-                              child: Text(comments,
-                                  style: TextStyle(color: Colors.white)))
+                            child: Text(
+                              comments,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )
                         ]),
                       )
                     ],
@@ -122,9 +143,10 @@ class _RatingsDetailState extends State<RatingsDetail> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(children: [
-                          Text("Recipes",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20))
+                          Text(
+                            "Recipes",
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          )
                         ]),
                       ),
                       Padding(
@@ -137,12 +159,16 @@ class _RatingsDetailState extends State<RatingsDetail> {
                             if (snapshot.hasData) {
                               return Column(children: [
                                 ListTile(
-                                  title: Text("Ingredients",
-                                      style: TextStyle(color: Colors.white)),
-                                  subtitle: Text("Tap Icon to show",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w300)),
+                                  title: Text(
+                                    "Ingredients",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  subtitle: Text(
+                                    "Tap Icon to show",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w300),
+                                  ),
                                   trailing: IconButton(
                                     icon: Icon(
                                       Icons.remove_red_eye_rounded,
@@ -156,80 +182,106 @@ class _RatingsDetailState extends State<RatingsDetail> {
                                     },
                                   ),
                                 ),
+                                // if showIngredients is true, show ingredients table
                                 showIngredients
                                     ? DataTable(
+                                        // ingredient and amount columns
                                         columns: [
                                             DataColumn(
-                                              label: Text('Ingredient',
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
+                                              label: Text(
+                                                'Ingredient',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                             ),
                                             DataColumn(
-                                              label: Text('Amount',
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
+                                              label: Text(
+                                                'Amount',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                             ),
                                           ],
+                                        // dynamically create rows
                                         rows: snapshot
                                             .data.ingredientsRecipes.entries
-                                            .map((entry) =>
-                                                DataRow(cells: <DataCell>[
-                                                  DataCell(Text(entry.key,
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.white))),
-                                                  DataCell(Text(entry.value,
-                                                      style: TextStyle(
-                                                          color: Colors.white)))
-                                                ]))
+                                            .map(
+                                              (entry) =>
+                                                  DataRow(cells: <DataCell>[
+                                                DataCell(
+                                                  Text(
+                                                    entry.key,
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  Text(
+                                                    entry.value,
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ]),
+                                            )
                                             .toList())
                                     : Text(" "),
                                 Column(children: [
                                   ListTile(
-                                    title: Text("Method",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold)),
+                                    title: Text(
+                                      "Method",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                     subtitle: Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           0.0, 8.0, 0.0, 0.0),
                                       child: Text(
-                                          '${snapshot.data.strInstructions}',
-                                          style:
-                                              TextStyle(color: Colors.white)),
+                                        '${snapshot.data.strInstructions}',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
                                     ),
                                   ),
                                   ListTile(
-                                    title: Text("Recipe Source",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold)),
+                                    title: Text(
+                                      "Recipe Source",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                     subtitle: InkWell(
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0.0, 8.0, 0.0, 0.0),
-                                          child: Text(snapshot.data.strSource,
-                                              style: TextStyle(
-                                                  color: Colors.white)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0.0, 8.0, 0.0, 0.0),
+                                        child: Text(
+                                          snapshot.data.strSource,
+                                          style: TextStyle(color: Colors.white),
                                         ),
-                                        onTap: () =>
-                                            launch(snapshot.data.strSource)),
+                                      ),
+                                      onTap: () =>
+                                          launch(snapshot.data.strSource),
+                                    ),
                                   ),
                                   ListTile(
-                                    title: Text("Video ",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold)),
+                                    title: Text(
+                                      "Video ",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                     subtitle: InkWell(
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0.0, 8.0, 0.0, 0.0),
-                                          child: Text(snapshot.data.strYoutube,
-                                              style: TextStyle(
-                                                  color: Colors.white)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0.0, 8.0, 0.0, 0.0),
+                                        child: Text(
+                                          snapshot.data.strYoutube,
+                                          style: TextStyle(color: Colors.white),
                                         ),
-                                        onTap: () =>
-                                            launch(snapshot.data.strYoutube)),
+                                      ),
+                                      onTap: () =>
+                                          launch(snapshot.data.strYoutube),
+                                    ),
                                   ),
                                 ]),
                               ]);
@@ -237,18 +289,22 @@ class _RatingsDetailState extends State<RatingsDetail> {
                             } else if (snapshot.hasError) {
                               return ListTile(
                                 title: Text(
-                                    "Cannot fetch recipe for this meal!",
-                                    style: TextStyle(color: Colors.white)),
+                                  "Cannot fetch recipe for this meal!",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               );
                               // If there is not a meal found
                             } else {
+                              // no recipes, return error
                               if (snapshot.data == null) {
                                 return ListTile(
                                   title: Text(
-                                      "Cannot fetch recipe for this meal!",
-                                      style: TextStyle(color: Colors.white)),
+                                    "Cannot fetch recipe for this meal!",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 );
                               }
+                              // recipes are loading
                               return ListTile(
                                 title: Text("Loading"),
                               );
@@ -292,12 +348,13 @@ class _RatingsDetailState extends State<RatingsDetail> {
                         height: 10.0,
                       ),
                       Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            child: Text(
-                              "Rating",
-                            ),
-                          )),
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          child: Text(
+                            "Rating",
+                          ),
+                        ),
+                      ),
                       FormBuilderField(
                         name: "name",
                         validator: FormBuilderValidators.compose([
@@ -371,7 +428,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
     );
   }
 
-  /// Shows modal window for deleting a particular rating
+  /// Displays modal window for deleting a particular rating
   _ratingDeleteBottomModal(BuildContext context, AppUser user) {
     FirestoreServce firestoreServce = FirestoreServce(uid: user.uid);
     showModalBottomSheet(
@@ -390,12 +447,13 @@ class _RatingsDetailState extends State<RatingsDetail> {
                       height: 10.0,
                     ),
                     Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          child: Text(
-                            "Are you sure you want to delete this rating?",
-                          ),
-                        )),
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        child: Text(
+                          "Are you sure you want to delete this rating?",
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       height: 20,
                     ),

@@ -17,9 +17,12 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
+/// Persists the state of the bottom navigation bar to return the page
+/// currently selected
 class _HomeState extends State<Home> {
   int _currentPage = 0;
 
+  // The pages of the app
   final pages = [Ratings(), MapState(), Review(), Profile()];
 
   @override
@@ -47,14 +50,24 @@ class _HomeState extends State<Home> {
           type: BottomNavigationBarType.fixed,
           currentIndex: _currentPage,
           onTap: (index) => setState(() => _currentPage = index),
+          // the labels for the pages
           items: [
             BottomNavigationBarItem(
-                label: "Rating", icon: Icon(Icons.local_dining)),
-            BottomNavigationBarItem(label: "Map", icon: Icon(Icons.map)),
+              label: "Rating",
+              icon: Icon(Icons.local_dining),
+            ),
             BottomNavigationBarItem(
-                label: "Review", icon: Icon(Icons.rate_review_outlined)),
+              label: "Map",
+              icon: Icon(Icons.map),
+            ),
             BottomNavigationBarItem(
-                label: "Profile", icon: Icon(Icons.face_sharp))
+              label: "Review",
+              icon: Icon(Icons.rate_review_outlined),
+            ),
+            BottomNavigationBarItem(
+              label: "Profile",
+              icon: Icon(Icons.face_sharp),
+            )
           ],
         ),
       ),

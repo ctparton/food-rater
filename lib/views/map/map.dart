@@ -14,8 +14,12 @@ class MapState extends StatefulWidget {
   _MapStateState createState() => _MapStateState();
 }
 
+/// Holds the state of the map including markers
 class _MapStateState extends State<MapState> {
+  /// initialises the map markers
   Set<Marker> _markers = HashSet<Marker>();
+
+  /// controller to handle the Google map
   GoogleMapController mapController;
   final LatLng _center = const LatLng(54.2321181, -6.4204719);
   String style;
@@ -51,6 +55,7 @@ class _MapStateState extends State<MapState> {
                   c.setMapStyle(style);
                 }
               },
+              // add the map markers
               markers: createMarkers(_ratings),
               initialCameraPosition: CameraPosition(
                 target: _center,
@@ -81,22 +86,26 @@ class _MapStateState extends State<MapState> {
                               style: TextStyle(color: Colors.white),
                             ),
                             subtitle: Text(
-                                '${_ratings[index].mealName} on ${_ratings[index].date}',
-                                style: TextStyle(color: Colors.white)),
+                              '${_ratings[index].mealName} on ${_ratings[index].date}',
+                              style: TextStyle(color: Colors.white),
+                            ),
                             onTap: () {
                               // If rating tapped, move Google map to this rating
                               mapController.animateCamera(
-                                  CameraUpdate.newCameraPosition(CameraPosition(
+                                CameraUpdate.newCameraPosition(
+                                  CameraPosition(
                                       target: LatLng(_ratings[index].latitude,
                                           _ratings[index].longitude),
-                                      zoom: 15.0)));
+                                      zoom: 15.0),
+                                ),
+                              );
                             },
                           ),
                         ],
                       ),
                     );
                   }),
-            )
+            ),
           ])
         : LoadingSpinner(animationType: AnimType.rating);
   }
@@ -110,10 +119,13 @@ class _MapStateState extends State<MapState> {
               element.latitude != null && element.longitude != null)
           .toList();
       _markers = ratings
-          .map((e) => Marker(
+          .map(
+            (e) => Marker(
               markerId: MarkerId(e.docID),
               position: LatLng(e.latitude, e.longitude),
-              infoWindow: InfoWindow(title: e.rName, snippet: e.mealName)))
+              infoWindow: InfoWindow(title: e.rName, snippet: e.mealName),
+            ),
+          )
           .toSet();
     }
     return _markers;

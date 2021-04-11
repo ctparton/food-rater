@@ -16,16 +16,18 @@ class Ratings extends StatefulWidget {
   _RatingsState createState() => _RatingsState();
 }
 
+/// Holds the current state of the ratings made
 class _RatingsState extends State<Ratings> {
   /// Controls the state of the search bar
   final SearchBarController<FoodRating> _searchBarController =
       SearchBarController();
 
+  /// Sets default sort order to descending
   bool sortedDescending = true;
   @override
   Widget build(BuildContext context) {
     final _ratings = Provider.of<List<FoodRating>>(context);
-    // By default, sort ratings in descending order
+    // Sort ratings in sortedDescending order
     if (_ratings != null && sortedDescending) {
       _ratings.sort((a, b) => b.rating.compareTo(a.rating));
     }
@@ -42,11 +44,12 @@ class _RatingsState extends State<Ratings> {
               .toList();
     }
 
+    // If the ratings have been loaded
     return _ratings != null
         ? Scaffold(
             appBar: AppBar(
               title: Text("FoodMapr"),
-              actions: <Widget>[
+              actions: [
                 !sortedDescending
                     ? IconButton(
                         icon: Icon(
@@ -103,6 +106,7 @@ class _RatingsState extends State<Ratings> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     searchBarController: _searchBarController,
+                    // start searching after 2 characters
                     minimumChars: 2,
                     hintText: "Search by restaurant name",
                     hintStyle: TextStyle(
@@ -111,13 +115,16 @@ class _RatingsState extends State<Ratings> {
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
+                    // if no results are returned from the search query
                     emptyWidget: Text("No results found"),
+                    // if no search is being made, show all ratings
                     placeHolder: _ratings.length > 0
                         ? ListView.builder(
                             shrinkWrap: true,
                             itemCount: _ratings.length ?? 0,
                             itemBuilder: (BuildContext ctxt, int index) =>
-                                buildRatingCard(_ratings[index]))
+                                buildRatingCard(_ratings[index]),
+                          )
                         : Column(
                             children: [
                               SizedBox(
@@ -151,65 +158,73 @@ class _RatingsState extends State<Ratings> {
   /// meal and rating
   Widget buildRatingCard(FoodRating rating) {
     return Container(
-        child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        child: InkWell(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RatingsDetail(detail: rating),
-              ),
-            );
-          },
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Padding(padding: const EdgeInsets.only(top: 8.0, bottom: 8.0)),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(children: [
-                Expanded(
-                  flex: 6,
-                  child: Text(rating.rName,
-                      style: TextStyle(fontSize: 30),
-                      softWrap: false,
-                      overflow: TextOverflow.fade),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: InkWell(
+            // on tap navigate to the relevant ratings detail page
+            onTap: () {
+              FocusScope.of(context).unfocus();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RatingsDetail(detail: rating),
                 ),
-                Spacer()
-              ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(children: [
-                Text(
-                  rating.mealName,
-                  style: TextStyle(fontWeight: FontWeight.w400),
-                ),
-                Spacer()
-              ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(children: [
-                Text(rating.rating.toString(),
-                    style: TextStyle(fontWeight: FontWeight.w600)),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ImageIcon(
-                    AssetImage("assets/heart.png"),
-                    color: Colors.pink,
+              );
+            },
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                   ),
-                )
-              ]),
-            ),
-          ]),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(children: [
+                      Expanded(
+                        // ensures the restaruant name expands to fit the width
+                        flex: 6,
+                        child: Text(rating.rName,
+                            style: TextStyle(fontSize: 30),
+                            softWrap: false,
+                            overflow: TextOverflow.fade),
+                      ),
+                      Spacer(),
+                    ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(children: [
+                      Text(
+                        rating.mealName,
+                        style: TextStyle(fontWeight: FontWeight.w400),
+                      ),
+                      Spacer(),
+                    ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(children: [
+                      Text(
+                        rating.rating.toString(),
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ImageIcon(
+                          AssetImage("assets/heart.png"),
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ]),
+                  ),
+                ]),
+          ),
         ),
       ),
-    ));
+    );
   }
 }
