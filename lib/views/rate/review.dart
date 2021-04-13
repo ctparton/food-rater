@@ -4,7 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:food_rater/models/anim_type.dart';
 import 'package:food_rater/services/firestore_service.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
-import 'package:food_rater/views/settings.dart';
+import 'package:food_rater/views/common/custom_app_bar.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/app_user_model.dart';
@@ -102,29 +102,15 @@ class _ReviewState extends State<Review> {
     }
   }
 
+  /// Builds the form elements including the rate button
   @override
   Widget build(BuildContext context) {
     final _user = Provider.of<AppUser>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text("FoodMapr"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Colors.white,
-            ),
-            onPressed: () async {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SettingsScreen(),
-                ),
-              );
-            },
-          )
-        ],
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100),
+        child: FoodMaprAppBar(),
       ),
       body: SingleChildScrollView(
         physics: ScrollPhysics(),
@@ -134,25 +120,27 @@ class _ReviewState extends State<Review> {
             key: _formKey,
             child: Column(children: [
               FormBuilderTextField(
-                  autofocus: false,
-                  name: "rName",
-                  validator: FormBuilderValidators.required(context),
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.place),
-                    labelText: 'Restaurant Name *',
-                  ),
-                  onChanged: (value) => _onRestaurantNameChange(value)),
+                autofocus: false,
+                name: "rName",
+                validator: FormBuilderValidators.required(context),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.place),
+                  labelText: 'Restaurant Name *',
+                ),
+                onChanged: (value) => _onRestaurantNameChange(value),
+              ),
               // UI placeholder for the autocomplete suggestions
               placeResultList(),
               FormBuilderTextField(
-                  autofocus: false,
-                  name: "mealName",
-                  validator: FormBuilderValidators.required(context),
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.set_meal),
-                    labelText: 'Meal Name *',
-                  ),
-                  onChanged: (value) => _onMealNameChange(value)),
+                autofocus: false,
+                name: "mealName",
+                validator: FormBuilderValidators.required(context),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.set_meal),
+                  labelText: 'Meal Name *',
+                ),
+                onChanged: (value) => _onMealNameChange(value),
+              ),
               // Date picker
               FormBuilderDateTimePicker(
                 autofocus: false,
@@ -162,7 +150,9 @@ class _ReviewState extends State<Review> {
                 ]),
                 inputType: InputType.date,
                 decoration: InputDecoration(
-                    labelText: 'Consumed On', icon: Icon(Icons.date_range)),
+                  labelText: 'Consumed On',
+                  icon: Icon(Icons.date_range),
+                ),
                 onChanged: (value) => setState(() => _date = value),
               ),
               SizedBox(
@@ -186,18 +176,19 @@ class _ReviewState extends State<Review> {
                       errorText: field.errorText,
                     ),
                     child: RatingBar.builder(
-                        initialRating: 0,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: false,
-                        itemCount: 5,
-                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                        onRatingUpdate: (value) =>
-                            setState(() => _rating = value)),
+                      initialRating: 0,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (value) =>
+                          setState(() => _rating = value),
+                    ),
                   );
                 },
               ),
@@ -224,7 +215,9 @@ class _ReviewState extends State<Review> {
               const SizedBox(height: 15),
               FormBuilderTextField(
                 decoration: const InputDecoration(
-                    labelText: 'Comments', icon: Icon(Icons.comment)),
+                  labelText: 'Comments',
+                  icon: Icon(Icons.comment),
+                ),
                 name: "comments",
                 onChanged: (value) => setState(() => _comments = value),
               ),

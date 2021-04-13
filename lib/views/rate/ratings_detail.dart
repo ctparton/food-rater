@@ -88,27 +88,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
                   ),
                 ),
                 // Build read-only rating bar
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RatingBar(
-                    glow: false,
-                    initialRating: rating,
-                    ignoreGestures: true,
-                    onRatingUpdate: (value) => null,
-                    ratingWidget: RatingWidget(
-                      full: Image(
-                        image: AssetImage('assets/heart.png'),
-                      ),
-                      half: Image(
-                        image: AssetImage('assets/heart_half.png'),
-                      ),
-                      empty: Image(
-                        image: AssetImage('assets/heart_border.png'),
-                      ),
-                    ),
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                  ),
-                ),
+                StaticRatingsBar(rating: rating),
                 Card(
                   color: Colors.green,
                   child: Column(
@@ -184,106 +164,9 @@ class _RatingsDetailState extends State<RatingsDetail> {
                                 ),
                                 // if showIngredients is true, show ingredients table
                                 showIngredients
-                                    ? DataTable(
-                                        // ingredient and amount columns
-                                        columns: [
-                                            DataColumn(
-                                              label: Text(
-                                                'Ingredient',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                            DataColumn(
-                                              label: Text(
-                                                'Amount',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ],
-                                        // dynamically create rows
-                                        rows: snapshot
-                                            .data.ingredientsRecipes.entries
-                                            .map(
-                                              (entry) =>
-                                                  DataRow(cells: <DataCell>[
-                                                DataCell(
-                                                  Text(
-                                                    entry.key,
-                                                    style: TextStyle(
-                                                        color: Colors.white),
-                                                  ),
-                                                ),
-                                                DataCell(
-                                                  Text(
-                                                    entry.value,
-                                                    style: TextStyle(
-                                                        color: Colors.white),
-                                                  ),
-                                                ),
-                                              ]),
-                                            )
-                                            .toList())
+                                    ? IngredientsDateTable(snapshot: snapshot)
                                     : Text(" "),
-                                Column(children: [
-                                  ListTile(
-                                    title: Text(
-                                      "Method",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0.0, 8.0, 0.0, 0.0),
-                                      child: Text(
-                                        '${snapshot.data.strInstructions}',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                  ListTile(
-                                    title: Text(
-                                      "Recipe Source",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: InkWell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0.0, 8.0, 0.0, 0.0),
-                                        child: Text(
-                                          snapshot.data.strSource,
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                      onTap: () =>
-                                          launch(snapshot.data.strSource),
-                                    ),
-                                  ),
-                                  ListTile(
-                                    title: Text(
-                                      "Video ",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    subtitle: InkWell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0.0, 8.0, 0.0, 0.0),
-                                        child: Text(
-                                          snapshot.data.strYoutube,
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                      onTap: () =>
-                                          launch(snapshot.data.strYoutube),
-                                    ),
-                                  ),
-                                ]),
+                                RecipeDetail(snapshot: snapshot),
                               ]);
                               // If there is an error with the request
                             } else if (snapshot.hasError) {
@@ -480,5 +363,149 @@ class _RatingsDetailState extends State<RatingsDetail> {
         );
       },
     );
+  }
+}
+
+/// Creates the heart ratings bar, which is read-only and set to the current
+/// rating of the meal
+class StaticRatingsBar extends StatelessWidget {
+  const StaticRatingsBar({
+    Key key,
+    @required this.rating,
+  }) : super(key: key);
+
+  final double rating;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: RatingBar(
+        glow: false,
+        initialRating: rating,
+        ignoreGestures: true,
+        onRatingUpdate: (value) => null,
+        ratingWidget: RatingWidget(
+          full: Image(
+            image: AssetImage('assets/heart.png'),
+          ),
+          half: Image(
+            image: AssetImage('assets/heart_half.png'),
+          ),
+          empty: Image(
+            image: AssetImage('assets/heart_border.png'),
+          ),
+        ),
+        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      ),
+    );
+  }
+}
+
+/// Displays the detail of the recipe including the method and source links
+class RecipeDetail extends StatelessWidget {
+  const RecipeDetail({Key key, @required AsyncSnapshot<Recipe> snapshot})
+      : recipeDetail = snapshot,
+        super(key: key);
+
+  final AsyncSnapshot<Recipe> recipeDetail;
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      ListTile(
+        title: Text(
+          "Method",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
+          child: Text(
+            '${recipeDetail.data.strInstructions}',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+      ListTile(
+        title: Text(
+          "Recipe Source",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        subtitle: InkWell(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
+            child: Text(
+              recipeDetail.data.strSource,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          onTap: () => launch(recipeDetail.data.strSource),
+        ),
+      ),
+      ListTile(
+        title: Text(
+          "Video ",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        subtitle: InkWell(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
+            child: Text(
+              recipeDetail.data.strYoutube,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          onTap: () => launch(recipeDetail.data.strYoutube),
+        ),
+      ),
+    ]);
+  }
+}
+
+/// Displays the ingredients and quantities, formatted in a [DataTable] widget
+class IngredientsDateTable extends StatelessWidget {
+  const IngredientsDateTable(
+      {Key key, @required AsyncSnapshot<Recipe> snapshot})
+      : ingredients = snapshot,
+        super(key: key);
+
+  final AsyncSnapshot<Recipe> ingredients;
+
+  @override
+  Widget build(BuildContext context) {
+    return DataTable(
+        // ingredient and amount columns
+        columns: [
+          DataColumn(
+            label: Text(
+              'Ingredient',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Amount',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+        // dynamically create rows
+        rows: ingredients.data.ingredientsRecipes.entries
+            .map(
+              (entry) => DataRow(cells: <DataCell>[
+                DataCell(
+                  Text(
+                    entry.key,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DataCell(
+                  Text(
+                    entry.value,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ]),
+            )
+            .toList());
   }
 }

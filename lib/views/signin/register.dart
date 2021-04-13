@@ -90,7 +90,7 @@ class _RegisterState extends State<Register> {
                         FormBuilderValidators.minLength(context, 8),
                         FormBuilderValidators.required(context),
                       ]),
-                      name: "Confrim Password",
+                      name: "Confirm Password",
                       onChanged: (value) => setState(() => newPassword = value),
                       obscureText: true,
                     ),

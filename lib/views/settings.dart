@@ -55,9 +55,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             Card(
               child: ListTile(
-                  title: Text("Change Avatar"),
-                  leading: Icon(Icons.face_retouching_natural),
-                  onTap: () => displayAvatarSelection()),
+                title: Text("Change Avatar"),
+                leading: Icon(Icons.face_retouching_natural),
+                onTap: () => displayAvatarSelection(),
+              ),
             ),
             // Dark theme toggle
             Card(
@@ -88,14 +89,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           'icons8-user-${i < TOTAL_VARIANTS + 1 ? 'female' : 'male'}-skin-type-${i < TOTAL_VARIANTS + 1 ? i : i - TOTAL_VARIANTS}-48.png';
 
       // add a form option for each of the generated icons
-      options.add(FormBuilderFieldOption(
-        value: currentIcon,
-        child: Image.asset(
-          'assets/$currentIcon',
-          width: 48,
-          height: 48,
+      options.add(
+        FormBuilderFieldOption(
+          value: currentIcon,
+          child: Image.asset(
+            'assets/$currentIcon',
+            width: 48,
+            height: 48,
+          ),
         ),
-      ));
+      );
     }
 
     return options;
