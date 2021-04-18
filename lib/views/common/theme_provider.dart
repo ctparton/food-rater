@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// A class to provide a theme to all widgets in the widget tree
+/// A class to provide a dark or light theme to all widgets in the widget tree.
 class ThemeProvider extends ChangeNotifier {
   ThemeMode themeMode = ThemeMode.light;
 

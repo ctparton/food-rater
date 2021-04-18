@@ -26,7 +26,7 @@ class Recipe {
       this.ingredientsRecipes,
       this.strSource});
 
-  /// Decodes a single Recipe json response into a Recipe object
+  /// Decodes a single Recipe json response into a Recipe object.
   factory Recipe.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
@@ -43,9 +43,9 @@ class Recipe {
         strSource: map['strSource']);
   }
 
-  // Returns a map of all the ingredients in the response
+  // Returns a map of all the ingredients in the response.
   static Map<dynamic, dynamic> buildIngredientsMap(map) {
-    // Each recipe has ingredients from ingredient 1 up to 21 ingredients
+    // Each recipe has ingredients from ingredient 1 up to 21 ingredients.
     final foodIngredientsMap = {
       for (var a = 1; a < 21; a += 1)
         map['strIngredient$a']: map['strMeasure$a']
@@ -53,6 +53,6 @@ class Recipe {
     return foodIngredientsMap;
   }
 
-  /// Helper method to do response decoding
+  /// Helper method to do response decoding.
   factory Recipe.fromJson(String source) => Recipe.fromMap(json.decode(source));
 }

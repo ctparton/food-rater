@@ -16,7 +16,7 @@ void main() async {
 
 /// Application root which provides the current user and the dark or light
 /// theme to the descendent widgets (e.g. all other views in the app) through
-/// a MultiProvider
+/// a MultiProvider.
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

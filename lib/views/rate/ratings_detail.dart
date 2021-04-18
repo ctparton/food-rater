@@ -10,7 +10,7 @@ import 'package:food_rater/models/recipe_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// A class which creates the Ratings Detail Page to display the details of a
-/// particular rating
+/// particular rating.
 class RatingsDetail extends StatefulWidget {
   final FoodRating detail;
 
@@ -41,13 +41,15 @@ class _RatingsDetailState extends State<RatingsDetail> {
   @override
   Widget build(BuildContext context) {
     final _user = Provider.of<AppUser>(context);
+    // firestore service instance for updating and deleting rating
+    final FirestoreServce firestoreServce = FirestoreServce(uid: _user.uid);
     rating = widget.detail.rating;
     comments = widget.detail.comments;
     return Scaffold(
       body: Center(
         child: CustomScrollView(
           // Build app bar with large image that is gradually hidden upon scroll
-          slivers: <Widget>[
+          slivers: [
             SliverAppBar(
               title: Text(widget.detail.rName),
               expandedHeight: 350.0,
@@ -57,11 +59,13 @@ class _RatingsDetailState extends State<RatingsDetail> {
               actions: [
                 IconButton(
                   icon: Icon(Icons.edit),
-                  onPressed: () => _ratingEditBottomModal(context, _user),
+                  onPressed: () =>
+                      _ratingEditBottomModal(context, firestoreServce),
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () => _ratingDeleteBottomModal(context, _user),
+                  onPressed: () =>
+                      _ratingDeleteBottomModal(context, firestoreServce),
                 )
               ],
             ),
@@ -164,7 +168,7 @@ class _RatingsDetailState extends State<RatingsDetail> {
                                 ),
                                 // if showIngredients is true, show ingredients table
                                 showIngredients
-                                    ? IngredientsDateTable(snapshot: snapshot)
+                                    ? IngredientsDataTable(snapshot: snapshot)
                                     : Text(" "),
                                 RecipeDetail(snapshot: snapshot),
                               ]);
@@ -208,8 +212,8 @@ class _RatingsDetailState extends State<RatingsDetail> {
 
   /// Shows modal window for editing a particular rating with ratings and
   /// comments options
-  _ratingEditBottomModal(BuildContext context, AppUser user) {
-    FirestoreServce firestoreServce = FirestoreServce(uid: user.uid);
+  _ratingEditBottomModal(
+      BuildContext context, FirestoreServce firestoreServce) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -252,19 +256,20 @@ class _RatingsDetailState extends State<RatingsDetail> {
                               errorText: field.errorText,
                             ),
                             child: RatingBar.builder(
-                                initialRating: 0,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                allowHalfRating: false,
-                                itemCount: 5,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: 4.0),
-                                itemBuilder: (context, _) => Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                    ),
-                                onRatingUpdate: (value) =>
-                                    setStateModal(() => _rating = value)),
+                              initialRating: 0,
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              allowHalfRating: false,
+                              itemCount: 5,
+                              itemPadding:
+                                  EdgeInsets.symmetric(horizontal: 4.0),
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              onRatingUpdate: (value) =>
+                                  setStateModal(() => _rating = value),
+                            ),
                           );
                         },
                       ),
@@ -312,8 +317,8 @@ class _RatingsDetailState extends State<RatingsDetail> {
   }
 
   /// Displays modal window for deleting a particular rating
-  _ratingDeleteBottomModal(BuildContext context, AppUser user) {
-    FirestoreServce firestoreServce = FirestoreServce(uid: user.uid);
+  _ratingDeleteBottomModal(
+      BuildContext context, FirestoreServce firestoreServce) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -462,8 +467,8 @@ class RecipeDetail extends StatelessWidget {
 }
 
 /// Displays the ingredients and quantities, formatted in a [DataTable] widget
-class IngredientsDateTable extends StatelessWidget {
-  const IngredientsDateTable(
+class IngredientsDataTable extends StatelessWidget {
+  const IngredientsDataTable(
       {Key key, @required AsyncSnapshot<Recipe> snapshot})
       : ingredients = snapshot,
         super(key: key);

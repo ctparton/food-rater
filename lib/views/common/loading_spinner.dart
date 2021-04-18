@@ -5,7 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 /// Provides re-usable loading widgets to the app with various [animationType]
-/// This includes animations upon sign-in and when creating a rating
+/// This includes animations upon sign-in and when creating a rating.
 class LoadingSpinner extends StatefulWidget {
   final AnimType animationType;
 

@@ -4,7 +4,7 @@ import 'package:food_rater/views/signin/signin.dart';
 import 'package:provider/provider.dart';
 import 'home/home.dart';
 
-/// A wrapper class to surround the authentication status
+/// A wrapper class to get the authentication status.
 ///
 /// The purpose of this class is to persist authentication, by displaying the
 /// SignIn or Home widget depending on the authentication state returned by the

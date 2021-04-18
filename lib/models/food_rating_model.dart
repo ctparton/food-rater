@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 /// A model for serialization of Food Ratings sent to and retrieved from
-/// Firestore in the ratings subcollection
+/// Firestore in the ratings subcollection.
 ///
 /// This model also contains helper methods for FoodRatings, such as the
-/// [getImage] method, which provides error checking when retrieving an image
+/// [getImage] method, which provides error checking when retrieving an image.
 class FoodRating {
   final String rName;
   final String rLocation;
@@ -44,7 +44,7 @@ class FoodRating {
 
   /// Returns either an [Image] if the user uploaded an image when making a
   /// rating or returns an [SvgPicture] placeholder image if an image was not
-  /// uploaded or if retrieval of the uploaded image fails
+  /// uploaded or if retrieval of the uploaded image fails.
   dynamic getImage() {
     dynamic imagePlaceholder;
     try {

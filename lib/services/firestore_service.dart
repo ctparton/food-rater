@@ -8,9 +8,9 @@ import 'package:opencage_geocoder/opencage_geocoder.dart';
 import "package:google_maps_webservice/geocoding.dart";
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-/// Service class to handle all interactions with FireStore
+/// Service class to handle all interactions with FireStore.
 ///
-/// This class currently handles upload and retrieval of the food ratings
+/// This class currently handles upload and retrieval of the food ratings.
 class FirestoreServce {
   final String uid;
 
@@ -20,10 +20,10 @@ class FirestoreServce {
 
   FirestoreServce({this.uid});
 
-  /// Returns a [Future] after uploading a food rating to Firestore SQL
+  /// Returns a [Future] after uploading a food rating to Firestore.
   ///
-  /// This method also calls helper methods to upload any image and get
-  /// location data of the rating
+  /// This method also calls helper methods to upload an image if available,
+  /// and get location data in [double] coordinates of the rating
   Future addRating(rName, rLocation, placeID, mealName, date, rating,
       [image, comments, cuisine]) async {
     String comment = comments ?? '';
@@ -63,7 +63,7 @@ class FirestoreServce {
   }
 
   /// Returns a [Future<String>] of the cloud firebase storage location of the
-  /// uploaded file if the upload is successful, else returns null
+  /// uploaded file if the upload is successful, else returns null.
   Future<String> uploadFile(File _image) async {
     String returnURL;
     bool fileExists = await _image.exists();
@@ -84,7 +84,7 @@ class FirestoreServce {
     return returnURL;
   }
 
-  /// Returns a [Future] with the updated [FoodRating] or an error
+  /// Returns a [Future] with the updated [FoodRating] or an error.
   Future updateRating(FoodRating foodRating) async {
     return await userCollection
         .doc(uid)
@@ -103,7 +103,7 @@ class FirestoreServce {
   }
 
   /// Retrieves the location data from a [String] location in the form
-  /// "Restaurant Name, Location" or a [String] google Places ID
+  /// "Restaurant Name, Location" or a [String] google Places ID.
   ///
   /// Returns a [Map] of lat, lng strings to the actual location data if
   /// successful

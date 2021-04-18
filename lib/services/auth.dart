@@ -1,15 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_rater/models/app_user_model.dart';
 
-/// Service class to handle all interactions with Firebase Authentication
+/// Service class to handle all interactions with Firebase Authentication.
 ///
 /// Handles Sign In, Sign Out, Regrestration and Decoding of the raw [User]
-/// response from Firebase Auth into an [AppUser] model
+/// response from Firebase Auth into an [AppUser] model.
 class AuthService {
   /// Instance of Firebase Authentication
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  /// Returns an [AppUser] object if [User] in response from Firebase Auth
+  /// Returns an [AppUser] object if [User] in response from Firebase Auth and
+  /// not null.
   AppUser _userFromFirebase(User user) {
     return user != null
         ? AppUser(
@@ -21,13 +22,13 @@ class AuthService {
   }
 
   /// Listens for changes in the authentication status (Sign In / Sign Out) and
-  /// returns the current authentication state as a stream of [AppUser]
+  /// returns the current authentication state as a stream of [AppUser].
   Stream<AppUser> get user {
     return _auth.authStateChanges().map((User u) => _userFromFirebase(u));
   }
 
   /// Returns the signed in [AppUser] if sign in is successful with the supplied
-  /// [email] and [password], otherwise null is returned
+  /// [email] and [password], otherwise null is returned.
   Future signIn(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
@@ -39,7 +40,7 @@ class AuthService {
   }
 
   /// Registers a user with a [username], [email] and [password] and returns an
-  /// [AppUser] if registration is successful, otherwise null is returned
+  /// [AppUser] if registration is successful, otherwise null is returned.
   Future registerUser(String username, String email, String password) async {
     try {
       await _auth.createUserWithEmailAndPassword(
@@ -52,12 +53,12 @@ class AuthService {
   }
 
   /// Signs the user out, if successful the [AuthStateChanges] value is modified,
-  /// which modifies the [AppUser] stream in turn
+  /// which modifies the [AppUser] stream in turn.
   Future signOut() async {
     return await _auth.signOut();
   }
 
-  /// Updates the profile icon of the user as shown on the profile screen
+  /// Updates the profile icon of the user as shown on the profile screen.
   Future updateAvatar(String avatarIcon) async {
     try {
       await _auth.currentUser.updateProfile(photoURL: avatarIcon);
@@ -66,7 +67,7 @@ class AuthService {
     }
   }
 
-  /// Returns the [AppUser] that is currently signed in, else returns null
+  /// Returns the [AppUser] that is currently signed in, else returns null.
   AppUser getSignedInUser() {
     if (_auth.currentUser != null) {
       return _userFromFirebase(_auth.currentUser);

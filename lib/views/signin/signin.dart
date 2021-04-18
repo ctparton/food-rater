@@ -5,7 +5,7 @@ import 'package:food_rater/views/signin/register.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
 
-/// A class to handle the registration form to allow a new user to sign in
+/// A class to handle the form to allow a new user to sign in.
 class SignIn extends StatefulWidget {
   @override
   _SignInState createState() => _SignInState();

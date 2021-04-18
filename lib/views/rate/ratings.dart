@@ -10,7 +10,7 @@ import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';
 import 'dart:math' as math;
 
-/// A class to display the list of ratings that the user has made
+/// A class to display the list of ratings that the user has made.
 class Ratings extends StatefulWidget {
   @override
   _RatingsState createState() => _RatingsState();

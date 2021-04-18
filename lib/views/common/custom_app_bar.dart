@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_rater/views/settings.dart';
 
-/// A class to hold the AppBar for the FoodMapr application
+/// A class to hold the custom AppBar for the FoodMapr application.
 ///
 /// This is re-used in the profile and review screen
 class FoodMaprAppBar extends StatelessWidget {

@@ -11,7 +11,7 @@ import 'package:food_rater/models/app_user_model.dart';
 
 /// The Home class which holds the [BottomNavigationBar] and passes the
 /// list of [FoodRating] to the descendent Rating, Review, Profile and Map
-/// pages
+/// pages.
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();

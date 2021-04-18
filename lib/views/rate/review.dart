@@ -21,7 +21,7 @@ class Review extends StatefulWidget {
   _ReviewState createState() => _ReviewState();
 }
 
-/// A class to hold the state of the form and handle submission actions
+/// A class to hold the state of the form and handle submission actions.
 class _ReviewState extends State<Review> {
   /// Recipe service instance to get the cuisine on submission
   final RecipeService recipeService = RecipeService();

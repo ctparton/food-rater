@@ -69,7 +69,7 @@ class _MapStateState extends State<MapState> {
   }
 
   /// Returns a set of [Marker] based on the locations in the current
-  /// [FoodRating] objects
+  /// [FoodRating] objects.
   Set<Marker> createMarkers(List<FoodRating> ratings) {
     if (ratings != null) {
       ratings = ratings

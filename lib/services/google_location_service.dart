@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-/// Service class to handle all interactions with Google Places Autocomplete
+/// Service class to handle all interactions with Google Places Autocomplete.
 ///
 /// This class currently handles returning the decoded json response to the
-/// caller
+/// caller as the search is being made.
 class GoogleLocationService {
   final String kPLACES_API_KEY = env['G_KEY'];
   final String BASE_URL =

@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:food_rater/services/auth.dart';
 
 /// A Profile class to show the user their current stats such as when they
-/// joined FoodMapr and their total ratings
+/// joined FoodMapr and their total ratings.
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

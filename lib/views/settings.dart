@@ -4,7 +4,7 @@ import 'package:food_rater/views/common/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-/// A class to show the various settings of the application
+/// A class to show the various settings of the application.
 class SettingsScreen extends StatefulWidget {
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
