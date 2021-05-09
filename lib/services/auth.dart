@@ -41,7 +41,7 @@ class AuthService {
 
   /// Registers a user with a [username], [email] and [password] and returns an
   /// [AppUser] if registration is successful, otherwise null is returned.
-  Future registerUser(String username, String email, String password) async {
+  Future register(String username, String email, String password) async {
     try {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
