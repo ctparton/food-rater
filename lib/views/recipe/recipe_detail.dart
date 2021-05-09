@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:food_rater/models/recipe_model.dart';
 
-/// Displays the detail of the recipe including the method and source links
+/// Displays the details of the fetched [AsyncSnapshot<Recipe>] recipe from MealDB
+/// including the method and source links
 class RecipeDetail extends StatelessWidget {
   const RecipeDetail({Key key, @required AsyncSnapshot<Recipe> snapshot})
       : recipeDetail = snapshot,

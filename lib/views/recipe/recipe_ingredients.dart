@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:food_rater/models/recipe_model.dart';
 
-/// Displays the ingredients and quantities, formatted in a [DataTable] widget
+/// Displays the fetched [AsyncSnapshot<Recipe>] ingredients and quantities,
+/// formatted in a [DataTable] widget
 class IngredientsDataTable extends StatelessWidget {
   const IngredientsDataTable(
       {Key key, @required AsyncSnapshot<Recipe> snapshot})
