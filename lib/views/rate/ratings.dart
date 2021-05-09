@@ -4,7 +4,7 @@ import 'package:food_rater/models/anim_type.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:food_rater/views/common/loading_spinner.dart';
 import 'package:food_rater/views/rate/ratings_detail.dart';
-import 'package:food_rater/views/settings.dart';
+import 'package:food_rater/views/settings/settings.dart';
 import 'package:provider/provider.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flappy_search_bar/search_bar_style.dart';

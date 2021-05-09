@@ -4,13 +4,13 @@ import 'package:food_rater/views/map/map.dart';
 import 'package:animations/animations.dart';
 import 'package:food_rater/views/rate/ratings.dart';
 import 'package:food_rater/views/rate/review.dart';
-import 'package:food_rater/views/profile.dart';
+import 'package:food_rater/views/profile/profile.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/services/firestore_service.dart';
 import 'package:food_rater/models/app_user_model.dart';
 
 /// The Home class which holds the [BottomNavigationBar] and passes the
-/// list of [FoodRating] to the descendent Rating, Review, Profile and Map
+/// [List<FoodRating>] to the descendent Rating, Review, Profile and Map
 /// pages.
 class Home extends StatefulWidget {
   @override
@@ -42,7 +42,8 @@ class _HomeState extends State<Home> {
               child: child,
             );
           },
-          // The Indexed Stack ensures the state of each tab is retained
+          // The Indexed Stack ensures the state of each tab is retained when
+          // switching in / out
           child: IndexedStack(index: _currentPage, children: pages),
         ),
         bottomNavigationBar: BottomNavigationBar(

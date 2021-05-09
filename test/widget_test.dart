@@ -12,7 +12,7 @@ import 'package:food_rater/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+    // Build our app and trigger a frame .
     await tester.pumpWidget(MyApp());
 
     // Verify that our counter starts at 0.

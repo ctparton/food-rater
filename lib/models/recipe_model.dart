@@ -11,7 +11,7 @@ class Recipe {
   final String strMealThumb;
   final String strTags;
   final String strYoutube;
-  final Map ingredientsRecipes;
+  final Map ingredientsQuantities;
   final String strSource;
 
   Recipe(
@@ -23,7 +23,7 @@ class Recipe {
       this.strMealThumb,
       this.strTags,
       this.strYoutube,
-      this.ingredientsRecipes,
+      this.ingredientsQuantities,
       this.strSource});
 
   /// Decodes a single Recipe json response into a Recipe object.
@@ -39,7 +39,7 @@ class Recipe {
         strMealThumb: map['strMealThumb'],
         strTags: map['strTags'],
         strYoutube: map['strYoutube'],
-        ingredientsRecipes: buildIngredientsMap(map),
+        ingredientsQuantities: buildIngredientsMap(map),
         strSource: map['strSource']);
   }
 

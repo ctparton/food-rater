@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:food_rater/services/recipe_service.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'dart:io';
 import 'package:path/path.dart' as p;
@@ -14,7 +15,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class FirestoreServce {
   final String uid;
 
-  /// Instance of the firestore users collection
+  /// Instance of the recipe service to get cuisine information
+  final RecipeService recipeService = RecipeService();
+
+  /// Instance of the firestore users collection for uploading ratings to a user
+  /// collection
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection("users");
 
@@ -25,16 +30,27 @@ class FirestoreServce {
   /// This method also calls helper methods to upload an image if available,
   /// and get location data in [double] coordinates of the rating
   Future addRating(rName, rLocation, placeID, mealName, date, rating,
-      [image, comments, cuisine]) async {
+      [image, comments]) async {
     String comment = comments ?? '';
     String imageUrl;
+    dynamic cuisine;
     dynamic result;
     double lat;
     double lng;
 
+    // Attempt to get the type of cuisine of the meal
+    try {
+      cuisine = await recipeService.getCuisine(mealName);
+    } catch (err) {
+      cuisine = null;
+    }
+
+    // if there has been an image uploaded
     if (image != null) {
       imageUrl = await uploadFile(image);
     }
+
+    // Attempt to get the location
     try {
       result = await getLocationData(rLocation, placeID);
       if (result != null) {

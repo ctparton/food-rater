@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_rater/views/settings.dart';
+import 'package:food_rater/views/settings/settings.dart';
 
 /// A class to hold the custom AppBar for the FoodMapr application.
 ///

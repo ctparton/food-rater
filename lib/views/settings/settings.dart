@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:food_rater/services/auth.dart';
 import 'package:food_rater/views/common/theme_provider.dart';
+import 'package:food_rater/views/settings/settings_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-/// A class to show the various settings of the application.
+/// A class to display the various settings options in the application.
 class SettingsScreen extends StatefulWidget {
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
@@ -14,6 +15,26 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   /// instance of the Firebase AuthService to handle sign out and user pref updates
   final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  /// Displays an about dialog modal to view license info
+  void showAppInfo() {
+    return showAboutDialog(
+        context: context,
+        applicationName: "Food Mapr",
+        children: [
+          Text(
+              "Placeholder Icons made by 'https://www.flaticon.com/authors/flat-icons', Flat Icons from 'https://www.flaticon.com/'"),
+          Text(
+              "Avatar icons made by icons 8 'https://icons8.com/icon/pack/users/color--static'")
+        ]);
+  }
+
+  /// Client method to sign user out and return to sign in page
+  void signOutUser() async {
+    await _auth.signOut();
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,38 +49,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Card(
-              child: ListTile(
-                title: Text("Sign Out"),
-                leading: Icon(Icons.logout),
-                onTap: () async {
-                  await _auth.signOut();
-                  Navigator.pop(context);
-                },
-              ),
+            GenericSettingsTile(
+              settingName: "Sign Out",
+              settingsAction: () => signOutUser(),
+              settingsIcon: Icons.exit_to_app,
             ),
-            Card(
-              child: ListTile(
-                title: Text("About App"),
-                leading: Icon(Icons.info),
-                onTap: () => showAboutDialog(
-                    context: context,
-                    applicationName: "Food Mapr",
-                    children: [
-                      Text(
-                          "Placeholder Icons made by 'https://www.flaticon.com/authors/flat-icons', Flat Icons from 'https://www.flaticon.com/'"),
-                      Text(
-                          "Avatar icons made by icons 8 'https://icons8.com/icon/pack/users/color--static'")
-                    ]),
-              ),
+            // full list of packages used, also noted in pubspec.yaml
+            GenericSettingsTile(
+              settingName: "About App",
+              settingsAction: () => showAppInfo(),
+              settingsIcon: Icons.info,
             ),
-            Card(
-              child: ListTile(
-                title: Text("Change Avatar"),
-                leading: Icon(Icons.face_retouching_natural),
-                onTap: () => displayAvatarSelection(),
-              ),
+            GenericSettingsTile(
+              settingName: "Change Avatar",
+              settingsAction: () => displayAvatarSelection(),
+              settingsIcon: Icons.face_retouching_natural,
             ),
+
             // Dark theme toggle
             Card(
               child: SwitchListTile(
@@ -82,9 +88,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// Creates the different avatar options that the user can choose from
   List<FormBuilderFieldOption<dynamic>> createFormOptions() {
     const int TOTAL_VARIANTS = 5;
+    const int TOTAL_AVATARS = 11;
     List<FormBuilderFieldOption<dynamic>> options = [];
 
-    for (int i = 1; i < 11; i += 1) {
+    for (int i = 1; i < TOTAL_AVATARS; i += 1) {
       String currentIcon =
           'icons8-user-${i < TOTAL_VARIANTS + 1 ? 'female' : 'male'}-skin-type-${i < TOTAL_VARIANTS + 1 ? i : i - TOTAL_VARIANTS}-48.png';
 
@@ -109,26 +116,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return await showDialog<void>(
         context: context,
         builder: (BuildContext context) {
-          String selectedRadio = "no radio";
+          String selectedAvatar = "";
           return AlertDialog(
             title: Text('Choose an Avatar'),
             contentPadding: EdgeInsets.all(8.0),
-            // stateful builder allows local state within the dialog
+            // stateful builder allows local state within the dialog to change selection
             content: StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FormBuilder(
+                    key: _formKey,
                     child: Column(
                       children: [
                         // Chip input for avatar selection
                         FormBuilderChoiceChip(
                           runSpacing: 5.0,
                           spacing: 5.0,
-                          onChanged: (value) => selectedRadio = value,
+                          onChanged: (value) => selectedAvatar = value,
                           name: 'avatar_choice_chip',
                           options: createFormOptions(),
+                          validator: FormBuilderValidators.compose([
+                            FormBuilderValidators.required(context),
+                          ]),
                         ),
                       ],
                     ),
@@ -143,8 +154,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               FlatButton(
                 onPressed: () async => {
-                  Navigator.pop(context),
-                  await _auth.updateAvatar(selectedRadio)
+                  if (_formKey.currentState.validate())
+                    {
+                      Navigator.pop(context),
+                      await _auth.updateAvatar(selectedAvatar)
+                    }
                 },
                 child: Text('Confirm'),
               ),

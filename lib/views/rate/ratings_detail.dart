@@ -3,11 +3,13 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:food_rater/models/food_rating_model.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:food_rater/services/recipe_service.dart';
+import 'package:food_rater/views/common/ratings_bar.dart';
+import 'package:food_rater/views/recipe/recipe_detail.dart';
+import 'package:food_rater/views/recipe/recipe_ingredients.dart';
 import 'package:provider/provider.dart';
 import 'package:food_rater/models/app_user_model.dart';
 import 'package:food_rater/services/firestore_service.dart';
 import 'package:food_rater/models/recipe_model.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /// A class which creates the Ratings Detail Page to display the details of a
 /// particular rating.
@@ -368,149 +370,5 @@ class _RatingsDetailState extends State<RatingsDetail> {
         );
       },
     );
-  }
-}
-
-/// Creates the heart ratings bar, which is read-only and set to the current
-/// rating of the meal
-class StaticRatingsBar extends StatelessWidget {
-  const StaticRatingsBar({
-    Key key,
-    @required this.rating,
-  }) : super(key: key);
-
-  final double rating;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: RatingBar(
-        glow: false,
-        initialRating: rating,
-        ignoreGestures: true,
-        onRatingUpdate: (value) => null,
-        ratingWidget: RatingWidget(
-          full: Image(
-            image: AssetImage('assets/heart.png'),
-          ),
-          half: Image(
-            image: AssetImage('assets/heart_half.png'),
-          ),
-          empty: Image(
-            image: AssetImage('assets/heart_border.png'),
-          ),
-        ),
-        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-      ),
-    );
-  }
-}
-
-/// Displays the detail of the recipe including the method and source links
-class RecipeDetail extends StatelessWidget {
-  const RecipeDetail({Key key, @required AsyncSnapshot<Recipe> snapshot})
-      : recipeDetail = snapshot,
-        super(key: key);
-
-  final AsyncSnapshot<Recipe> recipeDetail;
-  @override
-  Widget build(BuildContext context) {
-    return Column(children: [
-      ListTile(
-        title: Text(
-          "Method",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
-          child: Text(
-            '${recipeDetail.data.strInstructions}',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-      ),
-      ListTile(
-        title: Text(
-          "Recipe Source",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        subtitle: InkWell(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
-            child: Text(
-              recipeDetail.data.strSource,
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          onTap: () => launch(recipeDetail.data.strSource),
-        ),
-      ),
-      ListTile(
-        title: Text(
-          "Video ",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        subtitle: InkWell(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
-            child: Text(
-              recipeDetail.data.strYoutube,
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          onTap: () => launch(recipeDetail.data.strYoutube),
-        ),
-      ),
-    ]);
-  }
-}
-
-/// Displays the ingredients and quantities, formatted in a [DataTable] widget
-class IngredientsDataTable extends StatelessWidget {
-  const IngredientsDataTable(
-      {Key key, @required AsyncSnapshot<Recipe> snapshot})
-      : ingredients = snapshot,
-        super(key: key);
-
-  final AsyncSnapshot<Recipe> ingredients;
-
-  @override
-  Widget build(BuildContext context) {
-    return DataTable(
-        // ingredient and amount columns
-        columns: [
-          DataColumn(
-            label: Text(
-              'Ingredient',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          DataColumn(
-            label: Text(
-              'Amount',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-        // dynamically create rows
-        rows: ingredients.data.ingredientsRecipes.entries
-            .map(
-              (entry) => DataRow(cells: <DataCell>[
-                DataCell(
-                  Text(
-                    entry.key,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                DataCell(
-                  Text(
-                    entry.value,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ]),
-            )
-            .toList());
   }
 }

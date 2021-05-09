@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:food_rater/models/app_user_model.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
-import 'package:food_rater/services/recipe_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:food_rater/services/google_location_service.dart';
 
@@ -23,9 +22,6 @@ class Review extends StatefulWidget {
 
 /// A class to hold the state of the form and handle submission actions.
 class _ReviewState extends State<Review> {
-  /// Recipe service instance to get the cuisine on submission
-  final RecipeService recipeService = RecipeService();
-
   /// Key to hold the current state of the form
   final _formKey = GlobalKey<FormBuilderState>();
 
@@ -102,6 +98,50 @@ class _ReviewState extends State<Review> {
     }
   }
 
+  /// Client method to upload the rating made to Firestore, the [uid] refers
+  /// to the users uid to instantiate the [FireStoreService]
+  void uploadRating(
+      String uid,
+      String _rName,
+      String _rLocation,
+      String _placeID,
+      String _mealName,
+      String date,
+      double _rating,
+      File _image,
+      String _comments) async {
+    setState(() => isLoading = true);
+    _rLocation = _rName;
+    // Get the name of the restaurant from the address
+    _rName = _rName.split(",")[0];
+
+    final FirestoreServce firestoreServce = FirestoreServce(uid: uid);
+    try {
+      // Upload the rating
+      await firestoreServce.addRating(_rName, _rLocation, _placeID, _mealName,
+          date, _rating, _image, _comments);
+      setState(() {
+        isLoading = false;
+        resetForm();
+      });
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Rating submitted'),
+          action: SnackBarAction(
+            label: 'View',
+            onPressed: () {},
+          ),
+        ),
+      );
+      // Catch and display error
+    } catch (err) {
+      setState(() {
+        isLoading = false;
+        errorMessage = "An error has occured making the rating";
+      });
+    }
+  }
+
   /// Builds the form elements including the rate button
   @override
   Widget build(BuildContext context) {
@@ -109,7 +149,7 @@ class _ReviewState extends State<Review> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100),
+        preferredSize: const Size.fromHeight(55),
         child: FoodMaprAppBar(),
       ),
       body: SingleChildScrollView(
@@ -231,23 +271,8 @@ class _ReviewState extends State<Review> {
                     _formKey.currentState.save();
                     // if form passes validation checks, attempt upload
                     if (_formKey.currentState.validate()) {
-                      setState(() => isLoading = true);
-                      _rLocation = _rName;
-                      // Get the name of the restaurant from the address
-                      _rName = _rName.split(",")[0];
-
-                      FirestoreServce firestoreServce =
-                          FirestoreServce(uid: _user.uid);
-                      try {
-                        String cuisine;
-                        try {
-                          cuisine = await recipeService.getCuisine(_mealName);
-                        } catch (err) {
-                          cuisine = null;
-                        }
-
-                        // Upload the rating
-                        await firestoreServce.addRating(
+                      uploadRating(
+                          _user.uid,
                           _rName,
                           _rLocation,
                           _placeID,
@@ -255,30 +280,7 @@ class _ReviewState extends State<Review> {
                           DateFormat('dd-MM-yyyy').format(_date),
                           _rating,
                           _image,
-                          _comments,
-                          cuisine,
-                        );
-                        setState(() {
-                          isLoading = false;
-                          resetForm();
-                        });
-                        Scaffold.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Rating submitted'),
-                            action: SnackBarAction(
-                              label: 'View',
-                              onPressed: () {},
-                            ),
-                          ),
-                        );
-                        // Catch and display error
-                      } catch (err) {
-                        setState(() {
-                          isLoading = false;
-                          errorMessage =
-                              "An error has occured making the rating";
-                        });
-                      }
+                          _comments);
                     }
                   },
                   child: Text(

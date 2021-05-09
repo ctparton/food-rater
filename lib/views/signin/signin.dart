@@ -26,6 +26,22 @@ class _SignInState extends State<SignIn> {
   String password = '';
   String errorMessage = '';
 
+  /// Client method to sign user in with [email] and [password]
+  void signInUser(String email, String password) async {
+    if (_formKey.currentState.validate()) {
+      setState(() => isLoading = true);
+      dynamic result = await _auth.signIn(email, password);
+
+      // if signin call has failed
+      if (result == null) {
+        setState(() {
+          isLoading = false;
+          errorMessage = "Your credentials are incorrect";
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -90,29 +106,15 @@ class _SignInState extends State<SignIn> {
                       SizedBox(
                         width: double.infinity,
                         child: RaisedButton(
-                          child: Text(
-                            'Sign In',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          onPressed: () async {
-                            _formKey.currentState.save();
-                            // if form data is valid, make sign in call
-                            if (_formKey.currentState.validate()) {
-                              setState(() => isLoading = true);
-                              dynamic result =
-                                  await _auth.signIn(email, password);
-
-                              // if signin call has failed
-                              if (result == null) {
-                                setState(() {
-                                  isLoading = false;
-                                  errorMessage =
-                                      "Your credentials are incorrect";
-                                });
-                              }
-                            }
-                          },
-                        ),
+                            child: Text(
+                              'Sign In',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onPressed: () async {
+                              _formKey.currentState.save();
+                              // if form data is valid, make sign in call
+                              signInUser(email, password);
+                            }),
                       ),
                       SizedBox(
                         height: 30.0,

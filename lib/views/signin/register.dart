@@ -27,11 +27,32 @@ class _RegisterState extends State<Register> {
   String newPasswordConfirm = '';
   String errorMessage = '';
 
+  /// Client method to register user with [newUsername], [newEmail] and [newPassword]
+  void registerUser(
+      String newUsername, String newEmail, String newPassword) async {
+    if (_formKey.currentState.validate()) {
+      setState(() => isLoading = true);
+      dynamic result =
+          await _auth.registerUser(newUsername, newEmail, newPassword);
+
+      if (result == null) {
+        setState(() {
+          errorMessage = 'Check email format is correct';
+          isLoading = false;
+        });
+      } else {
+        Navigator.pop(context);
+        isLoading = false;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return isLoading
         ? LoadingSpinner(animationType: AnimType.loading)
         : Scaffold(
+            resizeToAvoidBottomPadding: false,
             body: Container(
               margin: EdgeInsets.all(30.0),
               child: FormBuilder(
@@ -122,22 +143,8 @@ class _RegisterState extends State<Register> {
                         ),
                         onPressed: () async {
                           _formKey.currentState.save();
-                          // if form data is valid, make sign in call
-                          if (_formKey.currentState.validate()) {
-                            setState(() => isLoading = true);
-                            dynamic result = await _auth.registerUser(
-                                newUsername, newEmail, newPassword);
-
-                            if (result == null) {
-                              setState(() {
-                                errorMessage = 'Check email format is correct';
-                                isLoading = false;
-                              });
-                            } else {
-                              Navigator.pop(context);
-                              isLoading = false;
-                            }
-                          }
+                          // if form data is valid, make register call
+                          registerUser(newUsername, newEmail, newPassword);
                         },
                       ),
                     ),

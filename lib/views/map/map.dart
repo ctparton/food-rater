@@ -23,6 +23,7 @@ class _MapStateState extends State<MapState> {
   GoogleMapController mapController;
   final LatLng _center = const LatLng(54.2321181, -6.4204719);
   String style;
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
