@@ -32,8 +32,7 @@ class _RegisterState extends State<Register> {
       String newUsername, String newEmail, String newPassword) async {
     if (_formKey.currentState.validate()) {
       setState(() => isLoading = true);
-      dynamic result =
-          await _auth.registerUser(newUsername, newEmail, newPassword);
+      dynamic result = await _auth.register(newUsername, newEmail, newPassword);
 
       if (result == null) {
         setState(() {
